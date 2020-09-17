@@ -2,9 +2,16 @@ import requests
 import re
 from bs4 import BeautifulSoup
 
+headers = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET',
+    'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Max-Age': '3600',
+    'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:52.0) Gecko/20100101 Firefox/52.0'
+}
 
 def make_soup(url):
-    request = requests.get(url)
+    request = requests.get(url, headers)
     soup = BeautifulSoup(request.content, 'html.parser')
     return soup
 
@@ -37,7 +44,14 @@ def select_list_item(list, pos):
 def clean_item(item):
     # Assuming the string only contains one number and that number is the one we want
     number = re.findall(r"\d*\.?\d+", item)
-    return float(number[0])
+    return_number = float(number[0])
+    if return_number < 30:
+        return_number = c_to_f(return_number)
+    return round(return_number, 1)
+
+
+def c_to_f(celsius):
+    return (celsius * 1.8 + 32)
 
 
 def proccess_water_temperature_avila(temp):
@@ -64,8 +78,17 @@ def proccess_water_temperature_avila(temp):
         feeling = "Temperature cannot be analyzed"
     return feeling
 
-if __name__ == "__main__":
-    url = "https://www.ncei.noaa.gov/access/data/coastal-water-temperature-guide/cpac.html"
+def get_suit(temp):
+    if temp > 65:
+        return "Shorts"
+    if temp > 60:
+        return "Springsuit"
+    return "Fullsuit"
+
+
+def get_water_temp(beach_name, url):
+    print("\n")
+    print(beach_name)
     tag = "b"
     index_to_extract = 0
     html_extract = make_soup(url)
@@ -75,3 +98,33 @@ if __name__ == "__main__":
     temp = clean_item(string_result)
     print(temp)
     print(proccess_water_temperature_avila(temp))
+    #print("\n")
+    return
+
+
+def get_avila_water():
+    name = "AVILA BEACH"
+    url = "https://www.ncei.noaa.gov/access/data/coastal-water-temperature-guide/cpac.html"
+    get_water_temp(name, url)
+
+
+def get_cayucos_water():
+    name = "CAYUCOS BEACH"
+    url = "https://www.surf-forecast.com/breaks/Cayucos-Pier/seatemp"
+    get_water_temp(name, url)
+
+def get_pismo_water():
+    name = "PISMO BEACH"
+    url = "https://www.surf-forecast.com/breaks/Pismo-Beach-Pier/seatemp"
+    get_water_temp(name, url)
+
+def get_morro_water():
+    name = "MORRO ROCK BEACH"
+    url = "https://www.surf-forecast.com/breaks/Morro-Rock/seatemp"
+    get_water_temp(name, url)
+
+if __name__ == "__main__":
+    get_avila_water()
+    get_cayucos_water()
+    get_pismo_water()
+    get_morro_water()
