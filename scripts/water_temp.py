@@ -107,7 +107,6 @@ def get_avila_water():
     url = "https://www.ncei.noaa.gov/access/data/coastal-water-temperature-guide/cpac.html"
     get_water_temp(name, url)
 
-
 def get_cayucos_water():
     name = "CAYUCOS BEACH"
     url = "https://www.surf-forecast.com/breaks/Cayucos-Pier/seatemp"
