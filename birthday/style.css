@@ -12,13 +12,13 @@ body {
   overflow: hidden;
 }
 body .birthday .add {
-  margin-top: 40px;
+  margin-top: 60px;
   clear: both;
   font-family: "Damion", cursive;
   background: transparent;
   border: 2px solid #e77572;
   color: #e77572;
-  font-size: 22px;
+  font-size: 36px;
   padding: 14px 28px;
   border-radius: 40px;
   transition: all 0.23s;
@@ -61,7 +61,7 @@ body .birthday_inner__modal h1 {
 }
 body .birthday_inner__modal p {
   font-family: "georgia";
-  font-size: 13px;
+  font-size: 24px;
   color: #b9918e;
 }
 body .birthday_inner__modal button {
@@ -71,7 +71,7 @@ body .birthday_inner__modal button {
   padding: 20px 20px 20px 20px;
   border: none;
   width: 100%;
-  font-size: 20px;
+  font-size: 36px;
   font-family: "Damion", cursive;
   position: absolute;
   left: 0;
@@ -105,7 +105,7 @@ body .birthday_inner__stage h1 {
 }
 body .birthday_inner__stage h2 {
   font-family: "georgia";
-  font-size: 12px;
+  font-size: 18px;
   color: #b9918e;
   line-height: 18px;
   margin: 0;
@@ -158,7 +158,7 @@ body .birthday_inner__stage .startagain {
   position: absolute;
   right: 0;
   top: 350px;
-  font-size: 24px;
+  font-size: 36px;
   color: #e77572;
 }
 body .birthday_inner__stage .cakemake {
@@ -312,7 +312,7 @@ body .birthday_inner__stage .options .sponges, body .birthday_inner__stage .opti
 body .birthday_inner__stage .options .sponges h3, body .birthday_inner__stage .options .fillings h3 {
   text-align: left;
   color: #a25a58;
-  font-size: 20px;
+  font-size: 30px;
 }
 body .birthday_inner__stage .options .sponges h5, body .birthday_inner__stage .options .fillings h5 {
   float: right;
@@ -321,7 +321,7 @@ body .birthday_inner__stage .options .sponges h5, body .birthday_inner__stage .o
   position: absolute;
   top: 20px;
   right: 14px;
-  font-size: 20px;
+  font-size: 30px;
 }
 body .birthday_inner__stage .options .sponges .item, body .birthday_inner__stage .options .fillings .item {
   float: left;
@@ -370,7 +370,7 @@ body .birthday_inner__stage button {
   background: transparent;
   border: 2px solid #e77572;
   color: #e77572;
-  font-size: 22px;
+  font-size: 36px;
   padding: 14px 28px;
   border-radius: 40px;
   transition: all 0.23s;
