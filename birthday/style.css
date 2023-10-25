@@ -30,7 +30,7 @@ body .birthday .add:hover {
   color: white;
 }
 body .birthday_inner__modal {
-  width: 500px;
+  width: 600px;
   position: absolute;
   left: 0;
   right: 0;
@@ -53,7 +53,7 @@ body .birthday_inner__modal .modal_image {
   transform: translateY(-60%);
 }
 body .birthday_inner__modal .modal_image img {
-  width: 100px;
+  width: 300px;
 }
 body .birthday_inner__modal h1 {
   color: #e77572;
@@ -89,7 +89,7 @@ body .birthday_inner .stage1 {
   display: block;
 }
 body .birthday_inner__stage {
-  width: 500px;
+  width: 600px;
   position: absolute;
   left: 0;
   right: 0;
@@ -105,9 +105,9 @@ body .birthday_inner__stage h1 {
 }
 body .birthday_inner__stage h2 {
   font-family: "georgia";
-  font-size: 18px;
+  font-size: 22px;
   color: #b9918e;
-  line-height: 18px;
+  line-height: 24px;
   margin: 0;
 }
 body .birthday_inner__stage .mix {
@@ -243,14 +243,14 @@ body .birthday_inner__stage .cakemake .filling div {
   border-radius: 100%;
 }
 body .birthday_inner__stage .cakemake .base {
-  width: 200px;
+  width: 300px;
   background-color: #ffd296;
 }
 body .birthday_inner__stage .cakemake .sponge {
-  width: 200px;
+  width: 300px;
 }
 body .birthday_inner__stage .cakemake .filling {
-  width: 200px;
+  width: 300px;
 }
 body .birthday_inner__stage .cakemake .sponge-vanilla {
   background-color: #ffd296;
