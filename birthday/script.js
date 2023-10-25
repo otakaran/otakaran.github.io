@@ -1,6 +1,6 @@
 $('.start').click(function(){
     $('.stage1').fadeOut();
-    fire_modal('https://s3-us-west-2.amazonaws.com/s.cdpn.io/217233/cake_modal.png','Let’s make a cake!','Since it’s your birthday, I find it only fitting that you get to make your own digital birthday cake. Start by making your cake mixture, then bake it in a digital oven and finally decorate. Have fun and happy birthday');
+    fire_modal('https://otakar.dev/birthday/static/IMG_2817.png','Let’s make a cake!','Since it’s your 50th birthday, I think you deserve a big cake! Start by making your cake mixture, then bake it in a digital oven and finally decorate. Have fun and happy birthday');
 })
 
 progress = 1;
@@ -14,7 +14,7 @@ function close_modal(callback){
     modal.css('transform','translateY(-50%) scale(0)')
     setTimeout(function(){
         $('.stage' + callback).fadeIn();
-    },600)
+    }, 600)
 }
 
 
@@ -87,7 +87,6 @@ $('.fillings .item_inner').click(function(){
 })
 
 function add_sponge(t){
-
     $('.cakemake').prepend('<div style="width:' + (200 - (bases * 20)) + 'px" class="sponge sponge-' + t + '"><div></div><div></div><div></div><div></div><div></div></div>')
     $('.sponges h5 span').html(bases)
 }
@@ -98,11 +97,10 @@ $('.startagain').click(function(){
     fillings = 0;
     $('.sponges h5 span').html(bases)
     $('.fillings h5 span').html(fillings)
-     $('.fillings').removeClass('inactive')
+    $('.fillings').removeClass('inactive')
     $('.sponges').addClass('inactive')
 })
 function add_filling(f){
-
     $('.cakemake').prepend('<div style="width:' + (200 - (bases * 20)) + 'px" class="filling filling-' + f + '"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>')
     $('.fillings h5 span').html(fillings)
 }
@@ -126,8 +124,7 @@ function add_candle(){
     $('svg').show()
     setTimeout(function(){
         $('.sa').fadeIn()
-    },2200)
-    
+    }, 2200)
 }
 
 $('.add').click(function(){
