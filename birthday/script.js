@@ -47,7 +47,7 @@ $('.mixer').click(function(){
     }
     if(mixtimes == 6){
         $('.stage2').fadeOut();
-        fire_modal('https://s3-us-west-2.amazonaws.com/s.cdpn.io/217233/mix_modal.png','Mix successful!','Congratulations, the mixture is perfect! After pouring the mixture into a baking tin, it’s now time to put it in our digital oven for about 3 seconds. That should be enough time for a nice spongy base.');
+        fire_modal('https://s3-us-west-2.amazonaws.com/s.cdpn.io/217233/mix_modal.png','Mix successful!','Congratulations, the mixture is perfect! After pouring the mixture into a baking tin, it’s now time to put it in the digital oven. That should be enough time for a nice spongy base.');
 
     }
 
