@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 495" role="img" aria-label="System schematic: UI screens flow through OCR and detectors into an LLM review step, then export to Jira.">
+  <defs>
+    <pattern id="g1" width="45" height="45" patternUnits="userSpaceOnUse">
+      <path d="M45 0H0V45" fill="none" stroke="#2a333b" stroke-width="1" opacity="0.45"/>
+    </pattern>
+    <marker id="a1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0L10 5L0 10z" fill="#56636d"/>
+    </marker>
+    <style>
+      .lbl{fill:#c5ccd1;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:20px;font-weight:600;letter-spacing:.03em}
+      .node{fill:#1b2228;stroke:#323b42;stroke-width:1.5}
+      .edge{stroke:#56636d;stroke-width:2;fill:none;marker-end:url(#a1)}
+      .fig{fill:#6e7c85;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:15px;letter-spacing:.18em}
+    </style>
+  </defs>
+  <rect width="720" height="495" fill="#111619"/>
+  <rect width="720" height="495" fill="url(#g1)"/>
+  <text x="32" y="48" class="fig">FIG · VISUAL LOCALIZATION QA</text>
+
+  <!-- edges (straight) -->
+  <line class="edge" x1="170" y1="237" x2="286" y2="172"/>
+  <line class="edge" x1="170" y1="259" x2="286" y2="324"/>
+  <line class="edge" x1="444" y1="172" x2="499" y2="236"/>
+  <line class="edge" x1="444" y1="324" x2="499" y2="260"/>
+  <line class="edge" x1="582" y1="277" x2="610" y2="386"/>
+
+  <!-- nodes -->
+  <rect class="node" x="32" y="219" width="138" height="56" rx="8"/>
+  <text class="lbl" x="101" y="254" text-anchor="middle">SCREENS</text>
+
+  <rect class="node" x="294" y="131" width="150" height="56" rx="8"/>
+  <text class="lbl" x="369" y="166" text-anchor="middle">OCR</text>
+
+  <rect class="node" x="294" y="307" width="150" height="56" rx="8"/>
+  <text class="lbl" x="369" y="342" text-anchor="middle">DETECTORS</text>
+
+  <rect class="node" x="505" y="219" width="155" height="56" rx="8" fill="#212931" stroke="#3a4651"/>
+  <text class="lbl" x="582" y="254" text-anchor="middle">LLM REVIEW</text>
+
+  <rect class="node" x="560" y="386" width="110" height="52" rx="8"/>
+  <text class="lbl" x="615" y="419" text-anchor="middle">JIRA</text>
+
+  <!-- packets -->
+  <circle cx="208" cy="229" r="5" fill="#2bc079"/>
+  <circle cx="598" cy="332" r="5" fill="#ff7e3e"/>
+</svg>

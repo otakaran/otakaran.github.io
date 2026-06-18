@@ -1,19 +1,657 @@
 <!DOCTYPE html>
-<html lang="en" >
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Otakar Andrysek</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="./style.css">
 
+  <!-- Set motion preference before paint so the hero never flashes. -->
+  <script>
+    (function (e) {
+      try { e.setAttribute("data-motion", matchMedia("(prefers-reduced-motion: reduce)").matches ? "reduce" : "full"); }
+      catch (_) { e.setAttribute("data-motion", "full"); }
+    })(document.documentElement);
+  </script>
+
+  <title>OJA Solutions — AI engineering &amp; workflow automation</title>
+  <meta name="description" content="OJA Solutions is Otakar Andrysek's AI-engineering practice: custom AI apps and assistants, websites and web apps, workflow automation, and Jira engineering for SMBs, startups, and operations teams. Based in Oregon, working worldwide.">
+  <link rel="canonical" href="https://otakar.dev/">
+  <meta name="theme-color" content="#111619">
+  <meta name="color-scheme" content="light dark">
+
+  <!-- Icons / manifest -->
+  <link rel="icon" href="/favicon.ico" sizes="48x48">
+  <link rel="icon" href="/assets/brand/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/assets/brand/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+
+  <!-- Open Graph / Twitter -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="OJA Solutions">
+  <meta property="og:title" content="OJA Solutions — AI engineering &amp; workflow automation">
+  <meta property="og:description" content="Custom AI apps, websites, workflow automation, and Jira engineering for teams that run on process. Based in Oregon, working worldwide.">
+  <meta property="og:url" content="https://otakar.dev/">
+  <meta property="og:image" content="https://otakar.dev/assets/img/og/og-cover.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Otakar Andrysek on an Oregon summit — OJA Solutions">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="OJA Solutions — AI engineering &amp; workflow automation">
+  <meta name="twitter:description" content="Custom AI apps, websites, workflow automation, and Jira engineering. Based in Oregon, working worldwide.">
+  <meta name="twitter:image" content="https://otakar.dev/assets/img/og/og-cover.jpg">
+
+  <!-- Structured data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://otakar.dev/#org",
+        "name": "OJA Solutions",
+        "alternateName": "OJA Solutions LLC",
+        "url": "https://otakar.dev/",
+        "logo": "https://otakar.dev/assets/brand/icon-512.png",
+        "image": "https://otakar.dev/assets/img/og/og-cover.jpg",
+        "foundingDate": "2024",
+        "description": "AI engineering and workflow automation — custom AI applications, automation, and Jira engineering for SMBs, startups, and operations teams.",
+        "areaServed": "Worldwide",
+        "address": { "@type": "PostalAddress", "addressRegion": "Oregon", "addressCountry": "US" },
+        "founder": { "@id": "https://otakar.dev/#person" },
+        "sameAs": ["https://github.com/otakaran"]
+      },
+      {
+        "@type": "Person",
+        "@id": "https://otakar.dev/#person",
+        "name": "Otakar Andrysek",
+        "jobTitle": "AI & Automation Engineer",
+        "worksFor": { "@id": "https://otakar.dev/#org" },
+        "alumniOf": "California Polytechnic State University (Cal Poly)",
+        "knowsLanguage": ["en", "cs"],
+        "url": "https://otakar.dev/",
+        "sameAs": ["https://github.com/otakaran"]
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://otakar.dev/#site",
+        "url": "https://otakar.dev/",
+        "name": "OJA Solutions",
+        "publisher": { "@id": "https://otakar.dev/#org" }
+      }
+    ]
+  }
+  </script>
+
+  <link rel="stylesheet" href="/assets/css/tokens.css">
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <script src="/assets/js/main.js" defer></script>
+  <script src="/assets/js/hero.js" defer></script>
+  <script src="/assets/js/motif.js" defer></script>
 </head>
-<body>
-<!-- partial:index.partial.html -->
-<canvas id="lines"></canvas>
-  <h1><span class="last">Otakar Andrysek</span></h1>
-<!-- partial -->
-  <script  src="./script.js"></script>
 
+<body id="top">
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- ===================== Header ===================== -->
+  <header class="site-header at-top">
+    <div class="site-header__inner">
+      <a class="brand" href="#top" aria-label="OJA Solutions — home">
+        <svg class="brand__mark" viewBox="0 0 192 80" fill="none" aria-hidden="true" focusable="false">
+          <g stroke="currentColor" stroke-width="11" stroke-linecap="square" stroke-linejoin="round">
+            <rect x="6" y="10" width="52" height="60" rx="17"/>
+            <path d="M118 10 V48 a22 22 0 0 1 -44 0"/>
+            <path d="M134 70 L160 10 L186 70 M143 50 H177"/>
+          </g>
+        </svg>
+        <span class="brand__name">Solutions</span>
+      </a>
+
+      <button class="nav-toggle" type="button" aria-label="Menu" aria-controls="primary-nav" aria-expanded="false">
+        <span class="nav-toggle__box" aria-hidden="true">
+          <span class="nav-toggle__bar"></span>
+          <span class="nav-toggle__bar"></span>
+          <span class="nav-toggle__bar"></span>
+        </span>
+      </button>
+
+      <nav class="nav" id="primary-nav" aria-label="Primary">
+        <ul class="nav__list" role="list">
+          <li><a class="nav__link" href="#services">Services</a></li>
+          <li><a class="nav__link" href="#build">What I build</a></li>
+          <li><a class="nav__link" href="#proof">Track record</a></li>
+          <li><a class="nav__link" href="#process">Process</a></li>
+          <li><a class="nav__link" href="#founder">About</a></li>
+        </ul>
+        <a class="btn nav__cta" href="#book">Book a call</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" tabindex="-1">
+
+    <!-- ===================== Hero ===================== -->
+    <section class="hero surface-dark" aria-labelledby="hero-title">
+      <div class="hero__bg" aria-hidden="true">
+        <div class="hero__bg-fallback"></div>
+        <canvas class="hero__canvas" id="hero-canvas"></canvas>
+        <!-- Radial vignette dims bright nodes under the header lockup; mirrors
+             the .hero__bg-fallback calm so the animated canvas reads the same.
+             (The header's own scrim — .site-header.at-top::before — keeps the
+             lockup legible while scrolling, since it travels with the header.) -->
+        <div class="hero__vignette"></div>
+      </div>
+      <div class="container hero__inner">
+        <p class="eyebrow hero__eyebrow">OJA Solutions · Est. 2024</p>
+        <h1 class="hero__title" id="hero-title">Custom <span class="accent">AI and automation</span>, built around how your team already works.</h1>
+        <p class="hero__lead">I design and build AI apps, websites, and workflow automation for SMBs, startups, and operations teams — systems that take the busywork off people's plates and let your team do the work that matters.</p>
+        <div class="hero__actions">
+          <a class="btn btn--primary btn--lg" href="#book">Book a discovery call <span class="btn__arrow" aria-hidden="true">→</span></a>
+          <a class="btn btn--lg btn--on-dark" href="#build">See what I can build</a>
+        </div>
+        <ul class="hero__meta" role="list">
+          <li>Based in Oregon · Working worldwide</li>
+          <li>Senior engineer, not an agency</li>
+          <li>Fixed scope, working previews</li>
+          <li>Bilingual EN · CZ</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ===================== Services ===================== -->
+    <section class="section" id="services" aria-labelledby="services-title">
+      <div class="container">
+        <header class="section__head" data-reveal>
+          <p class="section__index eyebrow">01 — Services</p>
+          <h2 class="section__title" id="services-title">What I do</h2>
+          <p class="section__intro lead measure">A senior engineer's toolkit, applied to your business. Most engagements start with one high-leverage piece and grow from there.</p>
+        </header>
+
+        <div class="services-grid">
+          <article class="card card--lead card--wide" data-reveal>
+            <span class="card__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="5" width="14" height="14" rx="3"/><rect x="9.5" y="9.5" width="5" height="5" rx="1"/><path d="M9 2.5v2.5M15 2.5v2.5M9 19v2.5M15 19v2.5M2.5 9H5M2.5 15H5M19 9h2.5M19 15h2.5"/></svg>
+            </span>
+            <div class="card__text">
+              <h3 class="card__title">AI apps &amp; assistants</h3>
+              <p class="card__body">Applications with AI at the core — assistants trained on your own docs, document pipelines, summarization, classification, and routing — built to do one job reliably. Where most of my work starts.</p>
+            </div>
+          </article>
+
+          <article class="card" data-reveal data-reveal-delay="1">
+            <span class="card__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 8h18M7 21h10M12 18v3"/></svg>
+            </span>
+            <h3 class="card__title">Websites &amp; web apps</h3>
+            <p class="card__body">Fast, modern sites and custom web apps — from a polished marketing page with booking to a full customer portal — built to load quickly and convert.</p>
+          </article>
+
+          <article class="card" data-reveal data-reveal-delay="2">
+            <span class="card__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="6" r="2.4"/><circle cx="19" cy="6" r="2.4"/><circle cx="12" cy="18" r="2.4"/><path d="M7.4 6h9.2M6.4 8.1l4.4 8M17.6 8.1l-4.4 8"/></svg>
+            </span>
+            <h3 class="card__title">Workflow automation</h3>
+            <p class="card__body">The handoffs your work passes through, running on their own: triggers, approvals, notifications, and sync across the apps and APIs you already use.</p>
+          </article>
+
+          <article class="card" data-reveal data-reveal-delay="3">
+            <span class="card__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16M15 4v16"/><path d="M5.5 8h1.5M11 8h1.5M17 8h1.5"/></svg>
+            </span>
+            <h3 class="card__title">Jira engineering</h3>
+            <p class="card__body">Jira made to fit your team — workflows, automation rules, cross-instance sync, and reporting — from someone who admins it for 19,000+ users day to day.</p>
+          </article>
+
+          <article class="card" data-reveal data-reveal-delay="2">
+            <span class="card__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 9l3 3-3 3M13.5 15H17"/></svg>
+            </span>
+            <h3 class="card__title">Internal tools &amp; integrations</h3>
+            <p class="card__body">Sharp internal apps and the glue between systems — dashboards, trackers, and integrations in Python, Flask, and React that retire the manual steps.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== What I can build for you ===================== -->
+    <section class="section section--sunken" id="build" aria-labelledby="build-title">
+      <!-- The animated hero "settles" into a faint, still graph here. -->
+      <canvas class="motif-field motif-field--settle" data-density="0.7" data-tone="light" aria-hidden="true"></canvas>
+      <div class="container">
+        <header class="section__head" data-reveal>
+          <p class="section__index eyebrow">02 — What I can build for you</p>
+          <h2 class="section__title" id="build-title">Tell me where the work piles up — I'll build the system that clears it</h2>
+          <p class="section__intro lead measure">Repetitive tickets, documents, intake, scheduling, reporting. Below are systems I build and proof of the same engineering shipped at scale. Picture your own bottleneck in the examples — that's the conversation to have.</p>
+        </header>
+
+        <div class="systems">
+
+          <!-- DRAFT:INVENTED — ground in real work or remove before launch -->
+          <!-- 1 · Website + booking system (invented flagship) -->
+          <article class="system" data-reveal data-draft="invented">
+            <div class="system__media">
+              <div class="system__shot system__shot--diagram">
+                <img src="/assets/img/mocks/mock-booking.svg" width="720" height="495" loading="lazy" decoding="async" alt="Mockup of a booking website: an availability calendar with selectable time slots beside automated confirmation and reminder cards.">
+              </div>
+            </div>
+            <div class="system__body">
+              <p class="system__num">01</p>
+              <h3 class="system__title">A website + booking system that runs itself</h3>
+              <p class="system__impact">Clients book the slot they want on your own site — then confirmations, reminders, and no-show follow-ups go out on their own. You stop playing phone tag and wake up to a full calendar instead of a full inbox.</p>
+              <ul class="system__labels" role="list">
+                <li class="tag">Website</li><li class="tag">Online booking</li><li class="tag">Auto reminders</li><li class="tag">Calendar sync</li><li class="tag">No-show recovery</li>
+              </ul>
+            </div>
+          </article>
+
+          <!-- DRAFT:INVENTED — ground in real work or remove before launch -->
+          <!-- 2 · AI assistant on your docs (invented flagship) -->
+          <article class="system system--reverse" data-reveal data-draft="invented">
+            <div class="system__media">
+              <div class="system__shot system__shot--diagram">
+                <img src="/assets/img/mocks/mock-assistant.svg" width="720" height="495" loading="lazy" decoding="async" alt="Mockup of an AI assistant chat answering a staff question from the company's own documents, with the answer citing its sources.">
+              </div>
+            </div>
+            <div class="system__body">
+              <p class="system__num">02</p>
+              <h3 class="system__title">An AI assistant that knows your business</h3>
+              <p class="system__impact">A private assistant trained on your handbooks, policies, and past tickets — so staff or customers get an instant, accurate answer that cites where it came from. The questions that used to interrupt someone now answer themselves.</p>
+              <ul class="system__labels" role="list">
+                <li class="tag">AI assistant</li><li class="tag">Your documents</li><li class="tag">Cited answers</li><li class="tag">Staff or customers</li><li class="tag">Private</li>
+              </ul>
+            </div>
+          </article>
+
+          <!-- DRAFT:INVENTED — ground in real work or remove before launch -->
+          <!-- 3 · Document extraction (invented flagship) -->
+          <article class="system" data-reveal data-draft="invented">
+            <div class="system__media">
+              <div class="system__shot system__shot--diagram">
+                <img src="/assets/img/mocks/mock-extract.svg" width="720" height="495" loading="lazy" decoding="async" alt="Mockup of document extraction: a scanned invoice flows into a clean structured data table, with a human approval step before it is saved.">
+              </div>
+            </div>
+            <div class="system__body">
+              <p class="system__num">03</p>
+              <h3 class="system__title">Documents in, clean data out</h3>
+              <p class="system__impact">Invoices, receipts, forms, and PDFs read automatically into the structured fields your tools expect — with a quick human approval before anything is saved. The pile of paperwork someone retypes every week stops being a job.</p>
+              <ul class="system__labels" role="list">
+                <li class="tag">Document AI</li><li class="tag">Data extraction</li><li class="tag">Human approval</li><li class="tag">Into your tools</li>
+              </ul>
+            </div>
+          </article>
+
+          <!-- 4 · Multi-instance Jira sync (REAL — proj-01) -->
+          <article class="system system--reverse" data-reveal>
+            <div class="system__media">
+              <div class="system__shot">
+                <img src="/assets/img/projects/proj-01.png" width="1808" height="2278" loading="lazy" decoding="async" alt="A two-instance Jira workflow diagram showing statuses on each instance linked by cross-instance actions and triggers, with live comment and attachment sync.">
+              </div>
+            </div>
+            <div class="system__body">
+              <p class="system__num">04 · Built &amp; shipped</p>
+              <h3 class="system__title">Two teams, one source of truth</h3>
+              <p class="system__impact">Two separate Jira instances kept in lockstep — statuses, comments, and attachments mirrored between them in near real time. Two organizations stopped emailing updates back and forth and started working from the same picture.</p>
+              <ul class="system__labels" role="list">
+                <li class="tag">Jira</li><li class="tag">Cross-instance sync</li><li class="tag">Webhooks</li><li class="tag">Status mapping</li><li class="tag">Live comments</li>
+              </ul>
+            </div>
+          </article>
+
+          <!-- 5 · Visual localization QA (REAL — sys-ocr schematic) -->
+          <article class="system" data-reveal>
+            <div class="system__media">
+              <div class="system__shot system__shot--diagram">
+                <img src="/assets/img/diagrams/sys-ocr.svg" width="720" height="495" loading="lazy" decoding="async" alt="Schematic: UI screens flow through OCR and detectors into an LLM review step, then export to Jira.">
+              </div>
+            </div>
+            <div class="system__body">
+              <p class="system__num">05 · Built &amp; shipped</p>
+              <h3 class="system__title">Bugs caught before customers see them</h3>
+              <p class="system__impact">An automated review pass for translated screens: OCR reads the text, detectors flag likely problems, and an AI review step writes up the findings and files them in Jira. Slow manual eyeballing became a consistent check that runs the same way every time.</p>
+              <ul class="system__labels" role="list">
+                <li class="tag">OCR</li><li class="tag">Detectors</li><li class="tag">AI review</li><li class="tag">Jira export</li><li class="tag">Python</li>
+              </ul>
+            </div>
+          </article>
+
+          <!-- 6 · Adaptive-card approvals (REAL — proj-03) -->
+          <article class="system system--reverse" data-reveal>
+            <div class="system__media">
+              <div class="system__shot">
+                <img src="/assets/img/projects/proj-03.png" width="1102" height="1124" loading="lazy" decoding="async" alt="A Microsoft Teams adaptive card titled “Jira Admin Request Tracker” showing a request submitted and then completed successfully.">
+              </div>
+            </div>
+            <div class="system__body">
+              <p class="system__num">06 · Built &amp; shipped</p>
+              <h3 class="system__title">Approvals that happen in chat</h3>
+              <p class="system__impact">Requests arrive in Microsoft Teams as a card the right person can act on right there — submit, approve, done, all tracked. No more approvals lost between email threads and tickets, and a clear record of who decided what.</p>
+              <ul class="system__labels" role="list">
+                <li class="tag">Power Automate</li><li class="tag">Teams</li><li class="tag">Adaptive Cards</li><li class="tag">HTTP / API</li><li class="tag">Approvals</li>
+              </ul>
+            </div>
+          </article>
+
+        </div>
+
+        <!-- Compact example-build grid (invented, prunable) -->
+        <div class="examples">
+          <h3 class="examples__head eyebrow" data-reveal>More I can build</h3>
+          <div class="grid grid--auto">
+
+            <!-- DRAFT:INVENTED — ground in real work or remove before launch -->
+            <article class="example-card" data-reveal data-draft="invented">
+              <span class="card__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
+              </span>
+              <h4 class="example-card__title">Your weekly report, written for you</h4>
+              <p class="example-card__line"><span class="k">Problem</span> The numbers live in five places and someone loses an afternoon assembling them.</p>
+              <p class="example-card__line"><span class="k">I build</span> A scheduled job that pulls the data and drafts a plain-language summary email.</p>
+              <p class="example-card__line"><span class="k">Outcome</span> The report lands in your inbox every Monday, ready to send.</p>
+              <ul class="example-card__tags" role="list"><li class="tag">Scheduled</li><li class="tag">AI summary</li><li class="tag">Email</li></ul>
+            </article>
+
+            <!-- DRAFT:INVENTED — ground in real work or remove before launch -->
+            <article class="example-card" data-reveal data-draft="invented">
+              <span class="card__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H8l-4 3z"/><path d="M8 9h8M8 12h5"/></svg>
+              </span>
+              <h4 class="example-card__title">Inbox triage that drafts the reply</h4>
+              <p class="example-card__line"><span class="k">Problem</span> The same questions arrive all day and each one needs a written answer.</p>
+              <p class="example-card__line"><span class="k">I build</span> An assistant that sorts incoming messages and drafts a reply for you to send or edit.</p>
+              <p class="example-card__line"><span class="k">Outcome</span> You approve good answers in seconds instead of writing them from scratch.</p>
+              <ul class="example-card__tags" role="list"><li class="tag">Triage</li><li class="tag">AI drafts</li><li class="tag">You approve</li></ul>
+            </article>
+
+            <!-- DRAFT:INVENTED — ground in real work or remove before launch -->
+            <article class="example-card" data-reveal data-draft="invented">
+              <span class="card__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 14l3-3 2 2 4-5"/></svg>
+              </span>
+              <h4 class="example-card__title">A dashboard for the numbers you check daily</h4>
+              <p class="example-card__line"><span class="k">Problem</span> Answering "how are we doing?" means logging into three systems and exporting CSVs.</p>
+              <p class="example-card__line"><span class="k">I build</span> A custom internal dashboard sitting over your existing APIs and data.</p>
+              <p class="example-card__line"><span class="k">Outcome</span> One screen, the metrics that matter, live.</p>
+              <ul class="example-card__tags" role="list"><li class="tag">Internal tool</li><li class="tag">Your APIs</li><li class="tag">Live metrics</li></ul>
+            </article>
+
+            <!-- DRAFT:INVENTED — ground in real work or remove before launch -->
+            <article class="example-card" data-reveal data-draft="invented">
+              <span class="card__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.5 5 5.5.8-4 4 1 5.5-5-2.7-5 2.7 1-5.5-4-4 5.5-.8z"/></svg>
+              </span>
+              <h4 class="example-card__title">Ship an AI feature into your product</h4>
+              <p class="example-card__line"><span class="k">Problem</span> You want summarize, classify, or auto-route in the app — but it's not your team's core work.</p>
+              <p class="example-card__line"><span class="k">I build</span> The AI feature, wired cleanly into your codebase and shipped behind your own UI.</p>
+              <p class="example-card__line"><span class="k">Outcome</span> A capable new feature without a hiring cycle.</p>
+              <ul class="example-card__tags" role="list"><li class="tag">In your product</li><li class="tag">Summarize / route</li><li class="tag">API</li></ul>
+            </article>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== Credibility + testimonials ===================== -->
+    <section class="section" id="proof" aria-labelledby="proof-title">
+      <div class="container">
+        <header class="section__head" data-reveal>
+          <p class="section__index eyebrow">03 — Track record</p>
+          <h2 class="section__title" id="proof-title">Grounded in real work</h2>
+          <p class="section__intro lead measure">The numbers behind the work, and what clients have said about it.</p>
+        </header>
+
+        <div class="stats" data-reveal>
+          <div class="stat">
+            <p class="stat__num">19,000<span class="unit">+</span></p>
+            <p class="stat__label">Jira users supported as administrator</p>
+          </div>
+          <div class="stat">
+            <p class="stat__num">20<span class="unit">+</span></p>
+            <p class="stat__label">project leads given technical support</p>
+          </div>
+          <div class="stat">
+            <p class="stat__num">EN<span class="unit"> · </span>CZ</p>
+            <p class="stat__label">bilingual delivery, English &amp; Czech</p>
+          </div>
+          <div class="stat">
+            <p class="stat__num">Cal Poly</p>
+            <p class="stat__label">B.S. Computer Science</p>
+          </div>
+        </div>
+
+        <h3 class="eyebrow quotes__head" data-reveal>What clients say</h3>
+        <div class="quotes">
+          <figure class="quote" data-reveal>
+            <span class="quote__mark" aria-hidden="true">&ldquo;</span>
+            <blockquote class="quote__text">Great communication and quality work! He was very trustworthy and easy to work with. He helped us find a solution that fit our needs and wasn't going to take a ton of time to implement. I would definitely use him again for any of our Jira needs.</blockquote>
+            <ul class="quote__chips" role="list">
+              <li class="tag">Clear Communicator</li><li class="tag">Solution Oriented</li><li class="tag">Reliable</li>
+            </ul>
+            <figcaption class="quote__cite">Ben G. · Jira setup · Upwork, 2024</figcaption>
+          </figure>
+          <figure class="quote" data-reveal data-reveal-delay="1">
+            <span class="quote__mark" aria-hidden="true">&ldquo;</span>
+            <blockquote class="quote__text">Very skilled and incredibly patient, Otakar easily handled my custom system needs completely. Will hire again and I give my highest possible recommendation! My thanks again for a job beautifully done.</blockquote>
+            <figcaption class="quote__cite">Skipper M. · Custom systems · Upwork, 2023</figcaption>
+          </figure>
+          <figure class="quote" data-reveal data-reveal-delay="2">
+            <span class="quote__mark" aria-hidden="true">&ldquo;</span>
+            <blockquote class="quote__text">Excellent experience, Otakar was great at finding the best solution for us!</blockquote>
+            <figcaption class="quote__cite">Client · Jira reporting · Upwork, 2023</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== Process ===================== -->
+    <section class="section section--sunken" id="process" aria-labelledby="process-title">
+      <div class="container">
+        <header class="section__head" data-reveal>
+          <p class="section__index eyebrow">04 — Process</p>
+          <h2 class="section__title" id="process-title">How an engagement works</h2>
+          <p class="section__intro lead measure">Tight increments against your real tools and data, with check-ins so you see progress — not surprises.</p>
+        </header>
+        <!-- Process data-line: a single packet flows across the 4 steps, echoing
+             the hero. Decorative; the flow is disabled under reduced-motion. -->
+        <div class="steps steps--flow">
+          <span class="steps__line" aria-hidden="true"><span class="steps__packet"></span></span>
+          <div class="step" data-reveal>
+            <h3 class="step__title">Discovery</h3>
+            <p class="step__body">A 30-minute call to understand the workflow, the friction, and what "done" looks like.</p>
+          </div>
+          <div class="step" data-reveal data-reveal-delay="1">
+            <h3 class="step__title">Scope &amp; plan</h3>
+            <p class="step__body">I map the system, find the piece with the most leverage, and propose a concrete plan with milestones.</p>
+          </div>
+          <div class="step" data-reveal data-reveal-delay="2">
+            <h3 class="step__title">Build &amp; iterate</h3>
+            <p class="step__body">I build in small increments against your real tools, with regular check-ins and working previews.</p>
+          </div>
+          <div class="step" data-reveal data-reveal-delay="3">
+            <h3 class="step__title">Handoff &amp; support</h3>
+            <p class="step__body">You get working software, documentation, and a clean handoff — plus support as it goes live.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== Locale band (photo accent) ===================== -->
+    <section class="locale-band surface-dark" aria-label="Based in Oregon, working worldwide">
+      <picture>
+        <source type="image/webp" srcset="/assets/img/photos/prague-1280.webp 1280w, /assets/img/photos/prague-1920.webp 1920w" sizes="100vw">
+        <img src="/assets/img/photos/prague-1280.jpg" srcset="/assets/img/photos/prague-1280.jpg 1280w, /assets/img/photos/prague-1920.jpg 1920w" sizes="100vw" alt="Old Town Prague rooftops" loading="lazy" decoding="async">
+      </picture>
+      <!-- Faint static node-graph watermark ties the dark band back to the hero. -->
+      <canvas class="motif-field motif-field--watermark" data-density="0.5" aria-hidden="true"></canvas>
+      <div class="container locale-band__inner">
+        <p class="locale-band__title">Based in Oregon. Working worldwide.</p>
+        <p class="locale-band__meta">Beaverton · Portland · Bilingual EN / CZ</p>
+      </div>
+    </section>
+
+    <!-- ===================== Founder ===================== -->
+    <section class="section" id="founder" aria-labelledby="founder-title">
+      <div class="container">
+        <div class="founder__grid">
+          <div class="founder__media" data-reveal>
+            <figure class="founder__photo">
+              <picture>
+                <source type="image/webp" srcset="/assets/img/photos/otakar-portrait-560.webp 560w, /assets/img/photos/otakar-portrait-1120.webp 1120w" sizes="(min-width:48em) 38vw, 90vw">
+                <img src="/assets/img/photos/otakar-portrait-1120.jpg" srcset="/assets/img/photos/otakar-portrait-560.jpg 560w, /assets/img/photos/otakar-portrait-1120.jpg 1120w" sizes="(min-width:48em) 38vw, 90vw" width="1120" height="1493" alt="Otakar Andrysek, founder of OJA Solutions, on a forested Oregon ridge" loading="lazy" decoding="async">
+              </picture>
+            </figure>
+            <p class="caption">Otakar Andrysek · Founder, OJA Solutions</p>
+          </div>
+
+          <div class="founder__body" data-reveal data-reveal-delay="1">
+            <p class="section__index eyebrow">05 — Founder</p>
+            <h2 class="section__title" id="founder-title">Otakar Andrysek</h2>
+            <p>I'm an AI and automation engineer. I founded OJA Solutions in 2024 to bring the kind of systems work I do at scale to smaller teams — the apps, automations, and integrations that quietly take the busywork off people's plates.</p>
+            <p>My background is in platform engineering at a global localization company, where I administer Jira for more than 19,000 users, support 20+ project leads, and build localization-automation and internal tooling in Python, Flask, and React. Earlier, at Cal Poly, I was Head Developer on a Digital Twin research project and led the Security Education Club's CTF program.</p>
+            <ul class="founder__facts" role="list">
+              <li><span class="k">Focus</span><span class="v">AI engineering, workflow automation, Jira</span></li>
+              <li><span class="k">Stack</span><span class="v">Python, Docker, NGINX, Java, Go, C / C++</span></li>
+              <li><span class="k">Education</span><span class="v">B.S. Computer Science, Cal Poly</span></li>
+              <li><span class="k">Languages</span><span class="v">English, Czech</span></li>
+              <li><span class="k">GitHub</span><span class="v"><a href="https://github.com/otakaran" rel="me noopener" target="_blank">github.com/otakaran</a></span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== Booking + Contact ===================== -->
+    <section class="section section--sunken" id="book" aria-labelledby="book-title">
+      <div class="container">
+        <header class="section__head" data-reveal>
+          <p class="section__index eyebrow">06 — Get in touch</p>
+          <h2 class="section__title" id="book-title">Book a discovery call</h2>
+          <p class="section__intro lead measure">A free 30-minute call to talk through your workflow and whether there's a good fit. Prefer to write first? Use the form.</p>
+        </header>
+
+        <div class="contact__grid">
+          <!-- Scheduler (component lands in a later phase) -->
+          <div class="panel" data-reveal>
+            <div class="panel__head">
+              <h3>Schedule</h3>
+              <span class="tag">30 min · video</span>
+            </div>
+            <div class="scheduler-mount" id="scheduler" data-meeting="discovery-30">
+              <div class="scheduler-fallback">
+                <span class="dot" aria-hidden="true"></span>
+                <p>Send a note with a couple of times that work and I'll reply with a calendar invite.</p>
+                <a class="btn btn--primary" href="mailto:hello@otakar.dev?subject=Discovery%20call%20%E2%80%94%20OJA%20Solutions">Email to book a call</a>
+                <p class="form__note">Weekday slots, 10:00 AM – 3:00 PM Pacific.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Inquiry form (wired to the backend in a later phase; mailto fallback now) -->
+          <div class="panel" data-reveal data-reveal-delay="1">
+            <div class="panel__head">
+              <h3>Project inquiry</h3>
+            </div>
+            <form class="form" id="inquiry-form" action="mailto:hello@otakar.dev" method="post" enctype="text/plain" data-endpoint="https://api.otakar.dev/inquiries">
+              <div class="form__row form__row--2">
+                <div class="field">
+                  <label class="field__label" for="f-name">Name <span class="req" aria-hidden="true">*</span></label>
+                  <input id="f-name" name="name" type="text" autocomplete="name" required maxlength="100">
+                </div>
+                <div class="field">
+                  <label class="field__label" for="f-email">Email <span class="req" aria-hidden="true">*</span></label>
+                  <input id="f-email" name="email" type="email" autocomplete="email" required maxlength="160">
+                </div>
+              </div>
+              <div class="form__row form__row--2">
+                <div class="field">
+                  <label class="field__label" for="f-type">Project type</label>
+                  <select id="f-type" name="project_type">
+                    <option value="">Select…</option>
+                    <option>AI app or assistant</option>
+                    <option>Website or web app</option>
+                    <option>Workflow automation</option>
+                    <option>Jira engineering</option>
+                    <option>Internal tool / integration</option>
+                    <option>Not sure yet</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label class="field__label" for="f-timeline">Timeline</label>
+                  <select id="f-timeline" name="timeline">
+                    <option value="">Select…</option>
+                    <option>As soon as possible</option>
+                    <option>Within a month</option>
+                    <option>This quarter</option>
+                    <option>Exploring</option>
+                  </select>
+                </div>
+              </div>
+              <div class="field">
+                <label class="field__label" for="f-message">What are you trying to solve? <span class="req" aria-hidden="true">*</span></label>
+                <textarea id="f-message" name="message" required maxlength="2000"></textarea>
+              </div>
+              <!-- Honeypot: real people leave this empty -->
+              <div class="hp-field" aria-hidden="true">
+                <label for="f-company">Company (leave blank)</label>
+                <input id="f-company" name="company" type="text" tabindex="-1" autocomplete="off">
+              </div>
+              <div class="form__actions">
+                <button class="btn btn--primary" type="submit">Send inquiry</button>
+                <span class="form__note">Or email directly: <a href="mailto:hello@otakar.dev">hello@otakar.dev</a></span>
+              </div>
+              <p class="form-status" role="status" aria-live="polite" hidden></p>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===================== Footer ===================== -->
+  <footer class="site-footer surface-dark">
+    <!-- The data-flow graph returns on the dark footer — the page ends where the
+         hero began, closing the motif loop. -->
+    <canvas class="motif-field motif-field--footer" data-density="0.85" aria-hidden="true"></canvas>
+    <div class="container">
+      <div class="site-footer__top">
+        <div class="footer__brand">
+          <a class="brand" href="#top" aria-label="OJA Solutions — home">
+            <svg class="brand__mark" viewBox="0 0 192 80" fill="none" aria-hidden="true" focusable="false">
+              <g stroke="currentColor" stroke-width="11" stroke-linecap="square" stroke-linejoin="round">
+                <rect x="6" y="10" width="52" height="60" rx="17"/>
+                <path d="M118 10 V48 a22 22 0 0 1 -44 0"/>
+                <path d="M134 70 L160 10 L186 70 M143 50 H177"/>
+              </g>
+            </svg>
+            <span class="brand__name">Solutions</span>
+          </a>
+          <p class="footer__tagline">AI engineering &amp; workflow automation — custom apps, websites, and the automation that ties them together.</p>
+        </div>
+        <div class="footer__cols">
+          <div class="footer__col">
+            <h3>Site</h3>
+            <ul role="list">
+              <li><a href="#services">Services</a></li>
+              <li><a href="#build">What I build</a></li>
+              <li><a href="#proof">Track record</a></li>
+              <li><a href="#process">Process</a></li>
+              <li><a href="#founder">About</a></li>
+            </ul>
+          </div>
+          <div class="footer__col">
+            <h3>Contact</h3>
+            <ul role="list">
+              <li><a href="#book">Book a call</a></li>
+              <li><a href="mailto:hello@otakar.dev">hello@otakar.dev</a></li>
+              <li><a href="https://github.com/otakaran" rel="me noopener" target="_blank">GitHub</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="footer__fine">
+        <span>© <span data-year>2026</span> OJA Solutions LLC · Beaverton, Oregon</span>
+        <span>Built &amp; hosted independently</span>
+      </div>
+    </div>
+  </footer>
 </body>
 </html>

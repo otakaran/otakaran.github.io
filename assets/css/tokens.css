@@ -1,0 +1,203 @@
+/* ==========================================================================
+   OJA Solutions — Design Tokens
+   Industrial / systems identity. Warm-white base, graphite ink, steel
+   structure, safety-green confirm, signal-orange CTA.
+   Single source of truth for palette, type, space, motion, layout.
+   ========================================================================== */
+
+:root {
+  /* --- Raw palette ------------------------------------------------------ */
+  /* Graphite — near-black UI / dark surfaces */
+  --graphite-900: #111619;
+  --graphite-800: #171D21;
+  --graphite-700: #212931;
+  --graphite-600: #303A42;
+  --graphite-500: #44505A;
+
+  /* Warm white — page background family */
+  --paper:        #F7F4EE; /* page background */
+  --paper-raised: #FCFAF5; /* elevated cards on paper */
+  --paper-sunken: #EEE9DF; /* recessed panels, code blocks */
+
+  /* Steel gray — structure, borders, secondary ink */
+  --steel-600: #586771;
+  --steel-500: #6E7C85;
+  --steel-400: #909AA1;
+  --steel-300: #BCC3C8;
+  --steel-200: #D8DCDF;
+  --steel-100: #E8EBED;
+
+  /* Safety green — accent / confirm */
+  --green-600: #157F4B; /* darker: passes AA as text on paper */
+  --green-500: #1FA463; /* accent fills, success */
+  --green-400: #2BC079; /* on-dark accents */
+
+  /* Signal orange — primary CTA / alert */
+  --orange-600: #D8540F; /* hover / orange-as-text on paper */
+  --orange-500: #F2641B; /* primary CTA fill */
+  --orange-400: #FF7E3E; /* on-dark accents / glow */
+
+  /* --- Semantic color (light surface = default) ------------------------- */
+  --color-bg:            var(--paper);
+  --color-bg-raised:     var(--paper-raised);
+  --color-bg-sunken:     var(--paper-sunken);
+  --color-surface-dark:  var(--graphite-900);
+
+  --color-ink:           var(--graphite-900); /* primary text */
+  --color-ink-secondary: var(--steel-600);    /* supporting text */
+  --color-ink-muted:     var(--steel-500);    /* captions, meta */
+  --color-ink-inverse:   var(--paper);        /* text on dark surfaces */
+
+  --color-border:        var(--steel-200);    /* structural lines */
+  --color-hairline:      var(--steel-100);    /* faint dividers */
+
+  --color-accent:        var(--green-600);    /* links/accent on paper */
+  --color-accent-bg:     var(--green-500);
+  --color-cta:           var(--orange-500);
+  --color-cta-hover:     var(--orange-600);
+  --color-on-cta:        var(--graphite-900);  /* dark ink on orange (safety-signage contrast) */
+
+  --color-selection:     rgba(242, 100, 27, 0.22);
+
+  /* Focus ring — visible on light and dark; double ring for contrast */
+  --focus-ring: 0 0 0 2px var(--color-bg), 0 0 0 4px var(--orange-500);
+
+  /* --- Typography ------------------------------------------------------- */
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", "JetBrains Mono", "Cascadia Code",
+    "Roboto Mono", Menlo, Consolas, monospace;
+
+  /* Fluid type scale (min → max across viewport) */
+  --fs-50:  0.75rem;                                   /* mono eyebrow / labels */
+  --fs-100: 0.8125rem;                                 /* fine print */
+  --fs-200: 0.9375rem;                                 /* small body */
+  --fs-300: 1rem;                                      /* body */
+  --fs-400: clamp(1.0625rem, 1.0rem + 0.3vw, 1.25rem); /* lead */
+  --fs-500: clamp(1.25rem, 1.1rem + 0.7vw, 1.5rem);    /* h3 */
+  --fs-600: clamp(1.6rem, 1.3rem + 1.4vw, 2.25rem);    /* h2 */
+  --fs-700: clamp(2.1rem, 1.6rem + 2.4vw, 3.25rem);    /* h1 */
+  --fs-800: clamp(2.6rem, 1.7rem + 4.2vw, 5rem);       /* hero display */
+
+  --lh-tight:   1.08;
+  --lh-snug:    1.25;
+  --lh-normal:  1.55;
+  --lh-relaxed: 1.7;
+
+  --tracking-tight:  -0.02em;
+  --tracking-normal: 0;
+  --tracking-wide:   0.04em;
+  --tracking-label:  0.14em;  /* mono eyebrows / kickers */
+
+  --weight-regular:  400;
+  --weight-medium:   500;
+  --weight-semibold: 600;
+  --weight-bold:     700;
+
+  --measure: 65ch; /* readable line length */
+
+  /* --- Spacing (8px rhythm, fluid section padding) ---------------------- */
+  --space-3xs: 0.25rem;
+  --space-2xs: 0.5rem;
+  --space-xs:  0.75rem;
+  --space-sm:  1rem;
+  --space-md:  1.5rem;
+  --space-lg:  2rem;
+  --space-xl:  3rem;
+  --space-2xl: 4rem;
+  --space-3xl: 6rem;
+  --space-4xl: 8rem;
+
+  --section-py: clamp(3.5rem, 2rem + 7vw, 7rem);
+
+  /* --- Layout ----------------------------------------------------------- */
+  --container:      75rem;  /* 1200px main column */
+  --container-wide: 84rem;  /* 1344px full-bleed-ish */
+  --container-text: 46rem;  /* prose blocks */
+  --gutter: clamp(1.125rem, 0.6rem + 2.6vw, 2.5rem);
+  --nav-h: 4rem;
+
+  /* --- Radius ----------------------------------------------------------- */
+  --radius-xs:   3px;
+  --radius-sm:   6px;
+  --radius-md:   10px;
+  --radius-lg:   16px;
+  --radius-pill: 999px;
+
+  /* --- Borders ---------------------------------------------------------- */
+  --border-hairline: 1px solid var(--color-hairline);
+  --border-structure: 1px solid var(--color-border);
+
+  /* --- Shadows (subtle, industrial) ------------------------------------- */
+  --shadow-sm:   0 1px 2px rgba(17, 22, 25, 0.06), 0 1px 1px rgba(17, 22, 25, 0.04);
+  --shadow-md:   0 4px 12px rgba(17, 22, 25, 0.08), 0 1px 3px rgba(17, 22, 25, 0.05);
+  --shadow-lg:   0 14px 40px rgba(17, 22, 25, 0.12), 0 4px 12px rgba(17, 22, 25, 0.07);
+  --shadow-card: 0 1px 0 var(--color-hairline), var(--shadow-sm);
+
+  /* --- Motion ----------------------------------------------------------- */
+  --ease-out:    cubic-bezier(0.22, 0.61, 0.21, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-emph:   cubic-bezier(0.16, 1, 0.3, 1);
+
+  --dur-fast:   140ms;
+  --dur:        240ms;
+  --dur-slow:   420ms;
+  --dur-slower: 720ms;
+
+  /* --- Z-index ---------------------------------------------------------- */
+  --z-base:    0;
+  --z-raised:  10;
+  --z-nav:     100;
+  --z-overlay: 200;
+  --z-modal:   300;
+  --z-toast:   400;
+
+  /* Breakpoints (reference only — used as raw values in media queries):
+     sm 30em/480px · md 48em/768px · lg 64em/1024px · xl 80em/1280px */
+}
+
+/* --- Invertible surfaces -------------------------------------------------
+   Apply .surface-dark to graphite sections (hero, footer) to remap ink so
+   nested components stay legible without bespoke overrides. .surface-paper
+   restores the light context inside a dark parent. --------------------- */
+.surface-dark {
+  --color-bg:            var(--graphite-900);
+  --color-bg-raised:     var(--graphite-800);
+  --color-bg-sunken:     var(--graphite-700);
+  --color-ink:           var(--paper);
+  --color-ink-secondary: var(--steel-300);
+  --color-ink-muted:     var(--steel-400);
+  --color-ink-inverse:   var(--graphite-900);
+  --color-border:        var(--graphite-600);
+  --color-hairline:      var(--graphite-700);
+  --color-accent:        var(--green-400);
+  --focus-ring: 0 0 0 2px var(--graphite-900), 0 0 0 4px var(--orange-400);
+  color: var(--color-ink);
+  background-color: var(--color-bg);
+}
+
+.surface-paper {
+  --color-bg:            var(--paper);
+  --color-bg-raised:     var(--paper-raised);
+  --color-bg-sunken:     var(--paper-sunken);
+  --color-ink:           var(--graphite-900);
+  --color-ink-secondary: var(--steel-600);
+  --color-ink-muted:     var(--steel-500);
+  --color-ink-inverse:   var(--paper);
+  --color-border:        var(--steel-200);
+  --color-hairline:      var(--steel-100);
+  --color-accent:        var(--green-600);
+  --focus-ring: 0 0 0 2px var(--paper), 0 0 0 4px var(--orange-500);
+  color: var(--color-ink);
+  background-color: var(--color-bg);
+}
+
+/* Respect reduced-motion globally by collapsing motion-duration tokens. */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-fast: 0.01ms;
+    --dur: 0.01ms;
+    --dur-slow: 0.01ms;
+    --dur-slower: 0.01ms;
+  }
+}

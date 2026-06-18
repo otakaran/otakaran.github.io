@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 495" role="img" aria-label="System schematic: rendered UI text that overflows is detected, sent for human approval, then filed as a Jira bug.">
+  <defs>
+    <pattern id="g3" width="45" height="45" patternUnits="userSpaceOnUse">
+      <path d="M45 0H0V45" fill="none" stroke="#2a333b" stroke-width="1" opacity="0.45"/>
+    </pattern>
+    <marker id="a3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0L10 5L0 10z" fill="#56636d"/>
+    </marker>
+    <style>
+      .lbl{fill:#c5ccd1;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:19px;font-weight:600;letter-spacing:.03em}
+      .sm{fill:#8c969d;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:14px;letter-spacing:.06em}
+      .node{fill:#1b2228;stroke:#323b42;stroke-width:1.5}
+      .edge{stroke:#56636d;stroke-width:2;fill:none;marker-end:url(#a3)}
+      .fig{fill:#6e7c85;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:15px;letter-spacing:.18em}
+      .txt{fill:#56636d}
+    </style>
+  </defs>
+  <rect width="720" height="495" fill="#111619"/>
+  <rect width="720" height="495" fill="url(#g3)"/>
+  <text x="32" y="48" class="fig">FIG · UI TRUNCATION DETECTION</text>
+
+  <!-- rendered UI mock -->
+  <rect class="node" x="34" y="138" width="252" height="218" rx="10"/>
+  <rect x="52" y="160" width="120" height="10" rx="3" fill="#3a4651"/>
+  <rect x="52" y="196" width="214" height="12" rx="3" class="txt"/>
+  <rect x="52" y="224" width="178" height="12" rx="3" class="txt"/>
+  <!-- overflowing line -->
+  <rect x="52" y="256" width="214" height="13" rx="3" class="txt"/>
+  <text x="240" y="267" font-family="ui-monospace,monospace" font-size="16" fill="#ff7e3e" font-weight="700">…</text>
+  <rect x="46" y="250" width="226" height="26" rx="4" fill="none" stroke="#ff7e3e" stroke-width="1.5" stroke-dasharray="5 4"/>
+  <text x="52" y="330" class="sm">RENDERED UI</text>
+
+  <!-- edges -->
+  <line class="edge" x1="286" y1="247" x2="352" y2="177"/>
+  <line class="edge" x1="437" y1="206" x2="437" y2="230"/>
+  <line class="edge" x1="437" y1="288" x2="437" y2="312"/>
+
+  <!-- pipeline stack -->
+  <rect class="node" x="357" y="150" width="160" height="56" rx="8"/>
+  <text class="lbl" x="437" y="184" text-anchor="middle">DETECT</text>
+
+  <rect class="node" x="357" y="232" width="160" height="56" rx="8" fill="#212931" stroke="#3a4651"/>
+  <text class="lbl" x="437" y="261" text-anchor="middle">APPROVE</text>
+  <text class="sm" x="437" y="279" text-anchor="middle">human-in-the-loop</text>
+
+  <rect class="node" x="357" y="314" width="160" height="56" rx="8"/>
+  <text class="lbl" x="430" y="348" text-anchor="middle">JIRA BUG</text>
+
+  <!-- approved check -->
+  <circle cx="556" cy="342" r="15" fill="none" stroke="#2bc079" stroke-width="2.5"/>
+  <path d="M548 342 l6 6 l11 -13" fill="none" stroke="#2bc079" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- packets -->
+  <circle cx="316" cy="215" r="5" fill="#ff7e3e"/>
+</svg>

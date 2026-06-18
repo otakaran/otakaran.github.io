@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 80" fill="none" role="img" aria-label="OJA">
+  <!-- Geometric monoline OJA. Inherits color via currentColor. -->
+  <g stroke="currentColor" stroke-width="11" stroke-linecap="square" stroke-linejoin="round">
+    <rect x="6" y="10" width="52" height="60" rx="17"/>
+    <path d="M118 10 V48 a22 22 0 0 1 -44 0"/>
+    <path d="M134 70 L160 10 L186 70 M143 50 H177"/>
+  </g>
+</svg>

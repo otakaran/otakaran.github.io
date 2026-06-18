@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 495" role="img" aria-label="System schematic: a domain is crawled into a set of pages, mapped for coverage, and turned into a generated test plan.">
+  <defs>
+    <pattern id="g2" width="45" height="45" patternUnits="userSpaceOnUse">
+      <path d="M45 0H0V45" fill="none" stroke="#2a333b" stroke-width="1" opacity="0.45"/>
+    </pattern>
+    <marker id="a2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0L10 5L0 10z" fill="#56636d"/>
+    </marker>
+    <style>
+      .lbl{fill:#c5ccd1;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:20px;font-weight:600;letter-spacing:.03em}
+      .sm{fill:#9aa3aa;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:16px}
+      .node{fill:#1b2228;stroke:#323b42;stroke-width:1.5}
+      .edge{stroke:#56636d;stroke-width:2;fill:none;marker-end:url(#a2)}
+      .fig{fill:#6e7c85;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:15px;letter-spacing:.18em}
+    </style>
+  </defs>
+  <rect width="720" height="495" fill="#111619"/>
+  <rect width="720" height="495" fill="url(#g2)"/>
+  <text x="32" y="48" class="fig">FIG · AUTOMATED TEST-PLAN GENERATION</text>
+
+  <!-- edges domain -> pages -->
+  <line class="edge" x1="140" y1="240" x2="232" y2="138"/>
+  <line class="edge" x1="140" y1="247" x2="232" y2="247"/>
+  <line class="edge" x1="140" y1="254" x2="232" y2="356"/>
+  <!-- pages -> coverage map -->
+  <line class="edge" x1="346" y1="138" x2="424" y2="232"/>
+  <line class="edge" x1="346" y1="247" x2="420" y2="247"/>
+  <line class="edge" x1="346" y1="356" x2="424" y2="262"/>
+  <!-- coverage -> test plan -->
+  <line class="edge" x1="582" y1="247" x2="606" y2="247"/>
+
+  <!-- domain -->
+  <rect class="node" x="14" y="219" width="126" height="56" rx="8" fill="#212931" stroke="#3a4651"/>
+  <text class="lbl" x="77" y="254" text-anchor="middle">DOMAIN</text>
+
+  <!-- pages -->
+  <rect class="node" x="234" y="113" width="112" height="50" rx="8"/>
+  <text class="sm" x="290" y="144" text-anchor="middle">/page</text>
+  <rect class="node" x="234" y="222" width="112" height="50" rx="8"/>
+  <text class="sm" x="290" y="253" text-anchor="middle">/page</text>
+  <rect class="node" x="234" y="331" width="112" height="50" rx="8"/>
+  <text class="sm" x="290" y="362" text-anchor="middle">/page</text>
+
+  <!-- coverage map -->
+  <rect class="node" x="426" y="217" width="156" height="60" rx="8"/>
+  <text class="lbl" x="504" y="244" text-anchor="middle" font-size="18">COVERAGE</text>
+  <text class="lbl" x="504" y="266" text-anchor="middle" font-size="18">MAP</text>
+
+  <!-- test plan output (checklist) -->
+  <rect class="node" x="606" y="190" width="100" height="114" rx="8"/>
+  <g stroke-linecap="round" stroke-linejoin="round" fill="none" stroke="#2bc079" stroke-width="2.4">
+    <path d="M620 214 l5 5 l9 -11"/>
+    <path d="M620 247 l5 5 l9 -11"/>
+    <path d="M620 280 l5 5 l9 -11"/>
+  </g>
+  <rect x="644" y="211" width="48" height="8" rx="3" fill="#56636d"/>
+  <rect x="644" y="244" width="48" height="8" rx="3" fill="#56636d"/>
+  <rect x="644" y="277" width="40" height="8" rx="3" fill="#56636d"/>
+
+  <!-- packets -->
+  <circle cx="196" cy="194" r="5" fill="#2bc079"/>
+  <circle cx="396" cy="247" r="5" fill="#ff7e3e"/>
+</svg>

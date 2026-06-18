@@ -135,3 +135,19 @@ Thumbs.db
 *.swo
 *.lnk
 *~
+
+# --- OJA Solutions site ---
+# Local-only SOURCE material: large binaries + PERSONAL DATA. Never commit.
+private/
+*.webarchive
+resume.rtf
+# Node / Cloudflare Worker build + local secrets
+node_modules/
+.wrangler/
+worker/.wrangler/
+.dev.vars
+worker/.dev.vars
+dist/
+# Local working notes / agent handoff (not site content)
+HANDOFF.md
+# NOTE: assets/img/** ARE committed — they are extracted site content.

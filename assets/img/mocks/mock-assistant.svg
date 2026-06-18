@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 495" role="img" aria-label="Mockup of an AI assistant chat: a staff question answered from the company's own documents, with the answer citing its sources.">
+  <defs>
+    <pattern id="bg2" width="45" height="45" patternUnits="userSpaceOnUse">
+      <path d="M45 0H0V45" fill="none" stroke="#2a333b" stroke-width="1" opacity="0.4"/>
+    </pattern>
+    <style>
+      .panel{fill:#171d21;stroke:#303a42;stroke-width:1.5}
+      .h{fill:#eef1f3;font-family:ui-sans-serif,system-ui,Segoe UI,Roboto,sans-serif;font-weight:700}
+      .t{fill:#c5ccd1;font-family:ui-sans-serif,system-ui,Segoe UI,Roboto,sans-serif}
+      .m{fill:#909aa1;font-family:ui-monospace,Menlo,Consolas,monospace;letter-spacing:.12em}
+      .bubble{fill:#cfd5d9;font-family:ui-sans-serif,system-ui,Segoe UI,Roboto,sans-serif;font-size:14px}
+    </style>
+  </defs>
+  <rect width="720" height="495" fill="#111619"/>
+  <rect width="720" height="495" fill="url(#bg2)"/>
+  <text x="32" y="44" class="m" font-size="14">FIG · ASSISTANT (DOCS + CITATIONS)</text>
+
+  <!-- App frame -->
+  <rect x="32" y="64" width="656" height="400" rx="12" class="panel"/>
+  <line x1="32" y1="108" x2="688" y2="108" stroke="#303a42" stroke-width="1.5"/>
+  <circle cx="56" cy="86" r="11" fill="#157f4b"/>
+  <path d="M50 86l4 4 8-9" stroke="#eafff3" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="78" y="84" class="h" font-size="15">Company Assistant</text>
+  <text x="78" y="100" class="t" font-size="11" fill="#909aa1">Trained on your docs · answers with sources</text>
+
+  <!-- User question bubble (right) -->
+  <rect x="300" y="128" width="360" height="56" rx="14" fill="#212931" stroke="#3a4651" stroke-width="1.5"/>
+  <text x="320" y="152" class="bubble">What's our refund window for annual</text>
+  <text x="320" y="172" class="bubble">plans, and who approves exceptions?</text>
+
+  <!-- Assistant answer bubble (left) -->
+  <rect x="60" y="200" width="430" height="156" rx="14" fill="#1b2228" stroke="#303a42" stroke-width="1.5"/>
+  <text x="80" y="226" class="t" font-size="14">Annual plans can be refunded within</text>
+  <text x="80" y="246" class="t" font-size="14"><tspan fill="#2bc079" font-weight="700">30 days</tspan> of renewal. Exceptions beyond</text>
+  <text x="80" y="266" class="t" font-size="14">that need <tspan fill="#eef1f3" font-weight="700">finance lead</tspan> sign-off.</text>
+
+  <!-- Citation chips -->
+  <text x="80" y="298" class="m" font-size="11">SOURCES</text>
+  <rect x="80" y="308" width="160" height="30" rx="8" fill="#212931" stroke="#3a4651" stroke-width="1.5"/>
+  <circle cx="98" cy="323" r="4" fill="#ff7e3e"/>
+  <text x="112" y="328" class="t" font-size="12">Billing Policy · p.4</text>
+  <rect x="250" y="308" width="180" height="30" rx="8" fill="#212931" stroke="#3a4651" stroke-width="1.5"/>
+  <circle cx="268" cy="323" r="4" fill="#ff7e3e"/>
+  <text x="282" y="328" class="t" font-size="12">Approvals Matrix · v3</text>
+
+  <!-- Composer -->
+  <rect x="60" y="392" width="600" height="44" rx="22" fill="#111619" stroke="#303a42" stroke-width="1.5"/>
+  <text x="84" y="419" class="t" font-size="13" fill="#6e7c85">Ask anything about your business…</text>
+  <circle cx="636" cy="414" r="16" fill="#f2641b"/>
+  <path d="M630 414h12M637 409l5 5-5 5" stroke="#111619" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
