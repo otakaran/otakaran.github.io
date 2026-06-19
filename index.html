@@ -142,15 +142,15 @@
       <div class="container hero__inner">
         <p class="eyebrow hero__eyebrow">OJA Solutions · Est. 2024</p>
         <h1 class="hero__title" id="hero-title">Custom <span class="accent">AI and automation</span>, built around how your team already works.</h1>
-        <p class="hero__lead">I design and build AI apps, websites, and workflow automation for SMBs, startups, and operations teams — systems that take the busywork off people's plates and let your team do the work that matters.</p>
+        <p class="hero__lead">I build AI apps, websites, and automation that take the busywork off your team — so everyone can focus on the work that matters.</p>
         <div class="hero__actions">
           <a class="btn btn--primary btn--lg" href="#book">Book a discovery call <span class="btn__arrow" aria-hidden="true">→</span></a>
           <a class="btn btn--lg btn--on-dark" href="#build">See what I can build</a>
         </div>
         <ul class="hero__meta" role="list">
-          <li>Based in Oregon · Working worldwide</li>
-          <li>Senior engineer, not an agency</li>
-          <li>Fixed scope, working previews</li>
+          <li>Based in Oregon · Worldwide</li>
+          <li>Solo senior engineer, not an agency</li>
+          <li>Fixed scope</li>
           <li>Bilingual EN · CZ</li>
         </ul>
       </div>
@@ -218,8 +218,8 @@
       <div class="container">
         <header class="section__head" data-reveal>
           <p class="section__index eyebrow">02 — What I can build for you</p>
-          <h2 class="section__title" id="build-title">Tell me where the work piles up — I'll build the system that clears it</h2>
-          <p class="section__intro lead measure">Repetitive tickets, documents, intake, scheduling, reporting. Below are systems I build and proof of the same engineering shipped at scale. Picture your own bottleneck in the examples — that's the conversation to have.</p>
+          <h2 class="section__title" id="build-title">Tell me where work piles up — I'll build the system that clears it</h2>
+          <p class="section__intro lead measure">Repetitive tickets, documents, intake, scheduling, reporting — here are systems I build to clear them. Picture your own bottleneck in the examples; that's the conversation to have.</p>
         </header>
 
         <div class="systems">
@@ -278,57 +278,6 @@
             </div>
           </article>
 
-          <!-- 4 · Multi-instance Jira sync (REAL — proj-01) -->
-          <article class="system system--reverse" data-reveal>
-            <div class="system__media">
-              <div class="system__shot">
-                <img src="/assets/img/projects/proj-01.png" width="1808" height="2278" loading="lazy" decoding="async" alt="A two-instance Jira workflow diagram showing statuses on each instance linked by cross-instance actions and triggers, with live comment and attachment sync.">
-              </div>
-            </div>
-            <div class="system__body">
-              <p class="system__num">04 · Built &amp; shipped</p>
-              <h3 class="system__title">Two teams, one source of truth</h3>
-              <p class="system__impact">Two separate Jira instances kept in lockstep — statuses, comments, and attachments mirrored between them in near real time. Two organizations stopped emailing updates back and forth and started working from the same picture.</p>
-              <ul class="system__labels" role="list">
-                <li class="tag">Jira</li><li class="tag">Cross-instance sync</li><li class="tag">Webhooks</li><li class="tag">Status mapping</li><li class="tag">Live comments</li>
-              </ul>
-            </div>
-          </article>
-
-          <!-- 5 · Visual localization QA (REAL — sys-ocr schematic) -->
-          <article class="system" data-reveal>
-            <div class="system__media">
-              <div class="system__shot system__shot--diagram">
-                <img src="/assets/img/diagrams/sys-ocr.svg" width="720" height="495" loading="lazy" decoding="async" alt="Schematic: UI screens flow through OCR and detectors into an LLM review step, then export to Jira.">
-              </div>
-            </div>
-            <div class="system__body">
-              <p class="system__num">05 · Built &amp; shipped</p>
-              <h3 class="system__title">Bugs caught before customers see them</h3>
-              <p class="system__impact">An automated review pass for translated screens: OCR reads the text, detectors flag likely problems, and an AI review step writes up the findings and files them in Jira. Slow manual eyeballing became a consistent check that runs the same way every time.</p>
-              <ul class="system__labels" role="list">
-                <li class="tag">OCR</li><li class="tag">Detectors</li><li class="tag">AI review</li><li class="tag">Jira export</li><li class="tag">Python</li>
-              </ul>
-            </div>
-          </article>
-
-          <!-- 6 · Adaptive-card approvals (REAL — proj-03) -->
-          <article class="system system--reverse" data-reveal>
-            <div class="system__media">
-              <div class="system__shot">
-                <img src="/assets/img/projects/proj-03.png" width="1102" height="1124" loading="lazy" decoding="async" alt="A Microsoft Teams adaptive card titled “Jira Admin Request Tracker” showing a request submitted and then completed successfully.">
-              </div>
-            </div>
-            <div class="system__body">
-              <p class="system__num">06 · Built &amp; shipped</p>
-              <h3 class="system__title">Approvals that happen in chat</h3>
-              <p class="system__impact">Requests arrive in Microsoft Teams as a card the right person can act on right there — submit, approve, done, all tracked. No more approvals lost between email threads and tickets, and a clear record of who decided what.</p>
-              <ul class="system__labels" role="list">
-                <li class="tag">Power Automate</li><li class="tag">Teams</li><li class="tag">Adaptive Cards</li><li class="tag">HTTP / API</li><li class="tag">Approvals</li>
-              </ul>
-            </div>
-          </article>
-
         </div>
 
         <!-- Compact example-build grid (invented, prunable) -->
@@ -342,9 +291,7 @@
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
               </span>
               <h4 class="example-card__title">Your weekly report, written for you</h4>
-              <p class="example-card__line"><span class="k">Problem</span> The numbers live in five places and someone loses an afternoon assembling them.</p>
-              <p class="example-card__line"><span class="k">I build</span> A scheduled job that pulls the data and drafts a plain-language summary email.</p>
-              <p class="example-card__line"><span class="k">Outcome</span> The report lands in your inbox every Monday, ready to send.</p>
+              <p class="example-card__line">A scheduled job pulls your numbers and drafts the summary email — in your inbox every Monday, ready to send.</p>
               <ul class="example-card__tags" role="list"><li class="tag">Scheduled</li><li class="tag">AI summary</li><li class="tag">Email</li></ul>
             </article>
 
@@ -354,9 +301,7 @@
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H8l-4 3z"/><path d="M8 9h8M8 12h5"/></svg>
               </span>
               <h4 class="example-card__title">Inbox triage that drafts the reply</h4>
-              <p class="example-card__line"><span class="k">Problem</span> The same questions arrive all day and each one needs a written answer.</p>
-              <p class="example-card__line"><span class="k">I build</span> An assistant that sorts incoming messages and drafts a reply for you to send or edit.</p>
-              <p class="example-card__line"><span class="k">Outcome</span> You approve good answers in seconds instead of writing them from scratch.</p>
+              <p class="example-card__line">An assistant sorts incoming messages and drafts a reply — you approve good answers in seconds instead of writing from scratch.</p>
               <ul class="example-card__tags" role="list"><li class="tag">Triage</li><li class="tag">AI drafts</li><li class="tag">You approve</li></ul>
             </article>
 
@@ -366,9 +311,7 @@
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 14l3-3 2 2 4-5"/></svg>
               </span>
               <h4 class="example-card__title">A dashboard for the numbers you check daily</h4>
-              <p class="example-card__line"><span class="k">Problem</span> Answering "how are we doing?" means logging into three systems and exporting CSVs.</p>
-              <p class="example-card__line"><span class="k">I build</span> A custom internal dashboard sitting over your existing APIs and data.</p>
-              <p class="example-card__line"><span class="k">Outcome</span> One screen, the metrics that matter, live.</p>
+              <p class="example-card__line">A custom dashboard over your existing APIs — one screen, the metrics that matter, live.</p>
               <ul class="example-card__tags" role="list"><li class="tag">Internal tool</li><li class="tag">Your APIs</li><li class="tag">Live metrics</li></ul>
             </article>
 
@@ -378,9 +321,7 @@
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.5 5 5.5.8-4 4 1 5.5-5-2.7-5 2.7 1-5.5-4-4 5.5-.8z"/></svg>
               </span>
               <h4 class="example-card__title">Ship an AI feature into your product</h4>
-              <p class="example-card__line"><span class="k">Problem</span> You want summarize, classify, or auto-route in the app — but it's not your team's core work.</p>
-              <p class="example-card__line"><span class="k">I build</span> The AI feature, wired cleanly into your codebase and shipped behind your own UI.</p>
-              <p class="example-card__line"><span class="k">Outcome</span> A capable new feature without a hiring cycle.</p>
+              <p class="example-card__line">The AI feature — summarize, classify, or route — wired into your codebase and shipped behind your own UI.</p>
               <ul class="example-card__tags" role="list"><li class="tag">In your product</li><li class="tag">Summarize / route</li><li class="tag">API</li></ul>
             </article>
 
@@ -395,7 +336,7 @@
         <header class="section__head" data-reveal>
           <p class="section__index eyebrow">03 — Track record</p>
           <h2 class="section__title" id="proof-title">Grounded in real work</h2>
-          <p class="section__intro lead measure">The numbers behind the work, and what clients have said about it.</p>
+          <p class="section__intro lead measure">The numbers, the work I've shipped, and what clients have said about it.</p>
         </header>
 
         <div class="stats" data-reveal>
@@ -412,30 +353,72 @@
             <p class="stat__label">bilingual delivery, English &amp; Czech</p>
           </div>
           <div class="stat">
-            <p class="stat__num">Cal Poly</p>
+            <p class="stat__num stat__num--brand">Cal Poly</p>
             <p class="stat__label">B.S. Computer Science</p>
           </div>
+        </div>
+
+        <h3 class="eyebrow proofs__head" data-reveal>Built &amp; shipped</h3>
+        <div class="proofs">
+          <article class="proof" data-reveal>
+            <div class="system__shot proof__shot">
+              <img src="/assets/img/projects/proj-01.png" width="1808" height="2278" loading="lazy" decoding="async" alt="A two-instance Jira workflow diagram with statuses on each side linked by cross-instance actions, syncing comments and attachments.">
+            </div>
+            <div class="proof__body">
+              <h4 class="proof__title">Two teams, one source of truth</h4>
+              <p class="proof__impact">Two Jira instances kept in lockstep — statuses, comments, and attachments mirrored in near real time.</p>
+              <ul class="proof__tags" role="list"><li class="tag">Jira</li><li class="tag">Cross-instance sync</li><li class="tag">Webhooks</li></ul>
+            </div>
+          </article>
+
+          <article class="proof" data-reveal data-reveal-delay="1">
+            <div class="system__shot system__shot--diagram proof__shot">
+              <img src="/assets/img/diagrams/sys-ocr.svg" width="720" height="495" loading="lazy" decoding="async" alt="Schematic: UI screens flow through OCR and detectors into an AI review step, then export to Jira.">
+            </div>
+            <div class="proof__body">
+              <h4 class="proof__title">Bugs caught before customers see them</h4>
+              <p class="proof__impact">OCR and detectors flag likely problems in translated screens; an AI review pass writes them up and files them in Jira.</p>
+              <ul class="proof__tags" role="list"><li class="tag">OCR</li><li class="tag">AI review</li><li class="tag">Jira export</li></ul>
+            </div>
+          </article>
+
+          <article class="proof" data-reveal data-reveal-delay="2">
+            <div class="system__shot proof__shot">
+              <img src="/assets/img/projects/proj-03.png" width="1102" height="1124" loading="lazy" decoding="async" alt="A Microsoft Teams adaptive card titled “Jira Admin Request Tracker” showing a request submitted and then completed.">
+            </div>
+            <div class="proof__body">
+              <h4 class="proof__title">Approvals that happen in chat</h4>
+              <p class="proof__impact">Requests arrive in Microsoft Teams as a card the right person acts on in place — submit, approve, done, all tracked.</p>
+              <ul class="proof__tags" role="list"><li class="tag">Power Automate</li><li class="tag">Teams</li><li class="tag">Approvals</li></ul>
+            </div>
+          </article>
         </div>
 
         <h3 class="eyebrow quotes__head" data-reveal>What clients say</h3>
         <div class="quotes">
           <figure class="quote" data-reveal>
             <span class="quote__mark" aria-hidden="true">&ldquo;</span>
-            <blockquote class="quote__text">Great communication and quality work! He was very trustworthy and easy to work with. He helped us find a solution that fit our needs and wasn't going to take a ton of time to implement. I would definitely use him again for any of our Jira needs.</blockquote>
-            <ul class="quote__chips" role="list">
-              <li class="tag">Clear Communicator</li><li class="tag">Solution Oriented</li><li class="tag">Reliable</li>
-            </ul>
-            <figcaption class="quote__cite">Ben G. · Jira setup · Upwork, 2024</figcaption>
+            <div class="quote__body">
+              <blockquote class="quote__text">Great communication and quality work! He was very trustworthy and easy to work with. He helped us find a solution that fit our needs and wasn't going to take a ton of time to implement. I would definitely use him again for any of our Jira needs.</blockquote>
+              <ul class="quote__chips" role="list">
+                <li class="tag">Clear Communicator</li><li class="tag">Solution Oriented</li><li class="tag">Reliable</li>
+              </ul>
+              <figcaption class="quote__cite">Ben G. · Jira setup · Upwork, 2024</figcaption>
+            </div>
           </figure>
           <figure class="quote" data-reveal data-reveal-delay="1">
             <span class="quote__mark" aria-hidden="true">&ldquo;</span>
-            <blockquote class="quote__text">Very skilled and incredibly patient, Otakar easily handled my custom system needs completely. Will hire again and I give my highest possible recommendation! My thanks again for a job beautifully done.</blockquote>
-            <figcaption class="quote__cite">Skipper M. · Custom systems · Upwork, 2023</figcaption>
+            <div class="quote__body">
+              <blockquote class="quote__text">Very skilled and incredibly patient, Otakar easily handled my custom system needs completely. Will hire again and I give my highest possible recommendation! My thanks again for a job beautifully done.</blockquote>
+              <figcaption class="quote__cite">Skipper M. · Custom systems · Upwork, 2023</figcaption>
+            </div>
           </figure>
           <figure class="quote" data-reveal data-reveal-delay="2">
             <span class="quote__mark" aria-hidden="true">&ldquo;</span>
-            <blockquote class="quote__text">Excellent experience, Otakar was great at finding the best solution for us!</blockquote>
-            <figcaption class="quote__cite">Client · Jira reporting · Upwork, 2023</figcaption>
+            <div class="quote__body">
+              <blockquote class="quote__text">Excellent experience, Otakar was great at finding the best solution for us!</blockquote>
+              <figcaption class="quote__cite">Client · Jira reporting · Upwork, 2023</figcaption>
+            </div>
           </figure>
         </div>
       </div>
@@ -479,8 +462,6 @@
         <source type="image/webp" srcset="/assets/img/photos/prague-1280.webp 1280w, /assets/img/photos/prague-1920.webp 1920w" sizes="100vw">
         <img src="/assets/img/photos/prague-1280.jpg" srcset="/assets/img/photos/prague-1280.jpg 1280w, /assets/img/photos/prague-1920.jpg 1920w" sizes="100vw" alt="Old Town Prague rooftops" loading="lazy" decoding="async">
       </picture>
-      <!-- Faint static node-graph watermark ties the dark band back to the hero. -->
-      <canvas class="motif-field motif-field--watermark" data-density="0.5" aria-hidden="true"></canvas>
       <div class="container locale-band__inner">
         <p class="locale-band__title">Based in Oregon. Working worldwide.</p>
         <p class="locale-band__meta">Beaverton · Portland · Bilingual EN / CZ</p>
@@ -538,7 +519,7 @@
               <div class="scheduler-fallback">
                 <span class="dot" aria-hidden="true"></span>
                 <p>Send a note with a couple of times that work and I'll reply with a calendar invite.</p>
-                <a class="btn btn--primary" href="mailto:hello@otakar.dev?subject=Discovery%20call%20%E2%80%94%20OJA%20Solutions">Email to book a call</a>
+                <a class="btn btn--primary" href="#book" data-eml-user="hello" data-eml-domain="otakar.dev" data-eml-subject="Discovery call — OJA Solutions">Email to book a call</a>
                 <p class="form__note">Weekday slots, 10:00 AM – 3:00 PM Pacific.</p>
               </div>
             </div>
@@ -549,7 +530,7 @@
             <div class="panel__head">
               <h3>Project inquiry</h3>
             </div>
-            <form class="form" id="inquiry-form" action="mailto:hello@otakar.dev" method="post" enctype="text/plain" data-endpoint="https://api.otakar.dev/inquiries">
+            <form class="form" id="inquiry-form" method="post" enctype="text/plain" data-endpoint="https://api.otakar.dev/inquiries" data-eml-user="hello" data-eml-domain="otakar.dev">
               <div class="form__row form__row--2">
                 <div class="field">
                   <label class="field__label" for="f-name">Name <span class="req" aria-hidden="true">*</span></label>
@@ -595,7 +576,6 @@
               </div>
               <div class="form__actions">
                 <button class="btn btn--primary" type="submit">Send inquiry</button>
-                <span class="form__note">Or email directly: <a href="mailto:hello@otakar.dev">hello@otakar.dev</a></span>
               </div>
               <p class="form-status" role="status" aria-live="polite" hidden></p>
             </form>
@@ -641,7 +621,7 @@
             <h3>Contact</h3>
             <ul role="list">
               <li><a href="#book">Book a call</a></li>
-              <li><a href="mailto:hello@otakar.dev">hello@otakar.dev</a></li>
+              <li><a href="#book" data-eml-user="hello" data-eml-domain="otakar.dev">hello [at] otakar.dev</a></li>
               <li><a href="https://github.com/otakaran" rel="me noopener" target="_blank">GitHub</a></li>
             </ul>
           </div>

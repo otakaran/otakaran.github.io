@@ -27,6 +27,7 @@
     // and collapsible mobile nav on this so a failed load degrades cleanly.
     root.classList.add("js-nav");
     setFooterYear();
+    initEmailLinks();
     initHeaderScroll();
     initMobileNav();
     initActiveSection();
@@ -36,6 +37,27 @@
   function setFooterYear() {
     var y = document.querySelector("[data-year]");
     if (y) y.textContent = String(new Date().getFullYear());
+  }
+
+  /* Bot-safe email: the address is split across data-attributes in the markup
+     (no plaintext mailto: or "user@domain" for scrapers to harvest) and only
+     assembled here at runtime. Links get a real mailto href; the inquiry form
+     gets its mailto action; obfuscated link text ("hello [at] …") is replaced
+     with the real address. Without JS the page shows the obfuscated text and
+     the links fall back to their static href (e.g. #book). */
+  function initEmailLinks() {
+    var nodes = document.querySelectorAll("[data-eml-user][data-eml-domain]");
+    Array.prototype.forEach.call(nodes, function (el) {
+      var user = el.getAttribute("data-eml-user");
+      var domain = el.getAttribute("data-eml-domain");
+      if (!user || !domain) return;
+      var addr = user + "@" + domain;
+      if (el.tagName === "FORM") { el.setAttribute("action", "mailto:" + addr); return; }
+      var subject = el.getAttribute("data-eml-subject");
+      el.setAttribute("href", "mailto:" + addr + (subject ? "?subject=" + encodeURIComponent(subject) : ""));
+      // Reveal the real address only where the markup opted in with an [at] placeholder.
+      if (el.children.length === 0 && /\[at\]/i.test(el.textContent)) el.textContent = addr;
+    });
   }
 
   /* Solidify the fixed header once the hero is scrolled past. */

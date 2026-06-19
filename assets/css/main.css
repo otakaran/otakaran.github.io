@@ -319,10 +319,19 @@ p { text-wrap: pretty; }
 }
 /* The wide lead card lays its content out horizontally where there's room. */
 @media (min-width: 36em) {
-  .card--wide { flex-direction: row; align-items: flex-start; gap: 1.25rem; }
+  /* .card.card--wide (not .card--wide) so this beats the base .card
+     { flex-direction: column } that's declared later in the file. */
+  .card.card--wide { flex-direction: row; align-items: flex-start; gap: 1.5rem; }
   .card--wide .card__icon { margin-bottom: 0; flex: none; }
+  .card--wide .card__text { flex: 1; min-width: 0; }
   .card--wide .card__title { font-size: var(--fs-500); }
-  .card--wide .card__body { margin-top: 0.4rem; max-width: 60ch; }
+  .card--wide .card__body { margin-top: 0.5rem; max-width: 64ch; }
+}
+/* At full width the body alone would strand empty space, so split the lead card
+   into a title column + a body column that fills the rest of the row. */
+@media (min-width: 64em) {
+  .card--wide .card__text { display: grid; grid-template-columns: minmax(11rem, 16rem) 1fr; column-gap: 2.5rem; align-items: start; }
+  .card--wide .card__body { margin-top: 0; max-width: 60ch; }
 }
 .card__text { display: flex; flex-direction: column; }
 
@@ -378,8 +387,6 @@ p { text-wrap: pretty; }
   -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 40%, transparent 100%);
   mask-image: linear-gradient(180deg, #000 0%, #000 40%, transparent 100%);
 }
-/* Watermark over the dark photo bands. */
-.motif-field--watermark { z-index: 1; opacity: 0.7; }
 /* Footer field: the graph returns on the dark closing band. */
 .motif-field--footer {
   -webkit-mask-image: radial-gradient(120% 100% at 80% 0%, #000, transparent 75%);
@@ -399,7 +406,7 @@ p { text-wrap: pretty; }
   background: var(--color-bg-raised);
   border: var(--border-structure);
   border-radius: var(--radius-md);
-  padding: clamp(1.25rem, 1rem + 1vw, 1.6rem);
+  padding: clamp(1.1rem, 0.9rem + 0.7vw, 1.4rem);
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -417,8 +424,7 @@ p { text-wrap: pretty; }
 .example-card:hover::before, .example-card:focus-within::before { opacity: 1; transform: scaleX(1); }
 .example-card .card__icon { margin-bottom: 0.9rem; }
 .example-card__title { font-size: var(--fs-400); }
-.example-card__line { margin-top: 0.7rem; color: var(--color-ink-secondary); font-size: var(--fs-200); }
-.example-card__line .k { display: block; font-family: var(--font-mono); font-size: var(--fs-50); letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-ink-muted); margin-bottom: 0.1rem; }
+.example-card__line { margin-top: 0.6rem; color: var(--color-ink-secondary); font-size: var(--fs-200); }
 .example-card__tags { margin-top: auto; padding-top: 1rem; display: flex; flex-wrap: wrap; gap: 0.4rem; }
 @media (prefers-reduced-motion: reduce) {
   .example-card, .example-card::before { transition: none; }
@@ -429,38 +435,73 @@ p { text-wrap: pretty; }
 .stat { background: var(--color-bg); padding: clamp(1.25rem, 1rem + 1vw, 1.8rem); }
 .stat__num { font-size: var(--fs-700); font-weight: var(--weight-bold); letter-spacing: var(--tracking-tight); line-height: 1; }
 .stat__num .unit { color: var(--color-accent); }
+.stat__num--brand { color: var(--color-accent); }  /* Cal Poly green (school color) */
 .stat__label { margin-top: 0.6rem; color: var(--color-ink-secondary); font-size: var(--fs-200); }
 
+/* --- Track-record proof cards (compact real projects) --------------------- */
+.proofs__head { margin-top: clamp(2.5rem, 1.5rem + 3vw, 4rem); margin-bottom: 1.25rem; }
+.proofs { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); gap: clamp(1rem, 0.5rem + 1.5vw, 1.5rem); }
+.proof { display: flex; flex-direction: column; background: var(--color-bg-raised); border: var(--border-structure); border-radius: var(--radius-md); overflow: hidden; transition: transform var(--dur) var(--ease-out), box-shadow var(--dur) var(--ease-out), border-color var(--dur) var(--ease-out); }
+.proof:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); border-color: var(--color-border); }
+/* Reuse .system__shot's aspect/cover handling, but sit flush inside the card. */
+.proof .system__shot { border: 0; border-radius: 0; box-shadow: none; }
+.proof .system__shot:not(.system__shot--diagram) { background: var(--color-bg-sunken); } /* mat behind light captures */
+.proof__body { padding: clamp(1rem, 0.8rem + 0.8vw, 1.4rem); display: flex; flex-direction: column; gap: 0.55rem; flex: 1; }
+.proof__title { font-size: var(--fs-400); }
+.proof__impact { color: var(--color-ink-secondary); font-size: var(--fs-200); }
+.proof__tags { margin-top: auto; padding-top: 0.5rem; display: flex; flex-wrap: wrap; gap: 0.4rem; }
+@media (prefers-reduced-motion: reduce) { .proof { transition: none; } }
+
 /* --- Testimonials --------------------------------------------------------- */
-.quotes { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); gap: clamp(1rem, 0.5rem + 1.5vw, 1.5rem); }
-.quote { background: var(--color-bg-raised); border: var(--border-structure); border-radius: var(--radius-md); padding: clamp(1.4rem, 1rem + 1vw, 2rem); display: flex; flex-direction: column; }
-.quote__mark { font-family: var(--font-mono); color: var(--color-accent); font-size: var(--fs-500); line-height: 1; }
-.quote__text { margin-top: 0.8rem; font-size: var(--fs-400); }
-.quote__chips { margin-top: 1.1rem; display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.quotes { display: flex; flex-direction: column; gap: clamp(1.75rem, 1rem + 2.5vw, 3rem); }
+.quote { display: grid; grid-template-columns: auto 1fr; gap: clamp(0.5rem, 0.1rem + 2vw, 2rem); align-items: start; }
+/* Oversized, clearly-decorative opening mark — scales with the row, so short and
+   long quotes both read as intentional (no "missing end quote" look). */
+.quote__mark { font-family: var(--font-mono); color: var(--color-accent); font-size: clamp(3.5rem, 2rem + 6vw, 6rem); line-height: 0.7; }
+.quote__body { display: flex; flex-direction: column; min-width: 0; }
+.quote__text { font-size: var(--fs-500); line-height: var(--lh-snug); max-width: 60ch; }
+.quote__chips { margin-top: 1rem; display: flex; flex-wrap: wrap; gap: 0.4rem; }
 .quote__chips .tag { font-size: var(--fs-50); color: var(--color-accent); }
-.quote__cite { margin-top: auto; padding-top: 1.2rem; font-style: normal; color: var(--color-ink-muted); font-size: var(--fs-200); font-family: var(--font-mono); }
+.quote__cite { margin-top: 0.9rem; font-style: normal; color: var(--color-ink-muted); font-size: var(--fs-200); font-family: var(--font-mono); }
 .quotes__head { margin-top: clamp(2.5rem, 1.5rem + 3vw, 4rem); margin-bottom: 1.25rem; }
+@media (max-width: 35.99em) {
+  .quote { grid-template-columns: 1fr; gap: 0.1rem; }
+  .quote__mark { font-size: 3rem; line-height: 1; }
+}
 
 /* --- Process -------------------------------------------------------------- */
 .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr)); gap: clamp(1.25rem, 0.5rem + 2vw, 2rem); counter-reset: step; }
-.step { position: relative; padding-top: 1.5rem; border-top: 2px solid var(--color-border); }
-.step::before { counter-increment: step; content: counter(step, decimal-leading-zero); position: absolute; top: -0.9rem; left: 0; font-family: var(--font-mono); font-size: var(--fs-100); color: var(--color-bg); background: var(--color-ink); padding: 0.15em 0.5em; border-radius: var(--radius-pill); z-index: 1; }
 .step__title { font-size: var(--fs-400); }
 .step__body { margin-top: 0.5rem; color: var(--color-ink-secondary); font-size: var(--fs-200); }
 
-/* Process data-line: a packet flows across the steps, echoing the hero.
-   Only drawn on the wide (single-row) layout; decorative + aria-hidden. */
+/* Engagement flow: ONE connector line carries a packet between the numbered
+   step "nodes" — the hero's data-flow language. Vertical on stacked mobile,
+   horizontal across the row on wider screens. The old per-step divider lines
+   are gone so only this single line remains. Decorative + aria-hidden. */
 .steps--flow { position: relative; }
-.steps__line { display: none; }
+.step { position: relative; padding-left: 2.75rem; }
+.step::before {
+  counter-increment: step; content: counter(step, decimal-leading-zero);
+  position: absolute; left: 0; top: 0;
+  font-family: var(--font-mono); font-size: var(--fs-100);
+  color: var(--color-bg); background: var(--color-ink);
+  padding: 0.15em 0.5em; border-radius: var(--radius-pill); z-index: 1;
+}
+.steps__line {
+  position: absolute; left: 0.8rem; top: 0.2rem; bottom: 0.2rem; width: 2px;
+  background: linear-gradient(180deg, var(--color-accent), color-mix(in srgb, var(--color-accent) 28%, transparent));
+  opacity: 0.5; z-index: 0;
+}
+.steps__packet { display: none; }
 @media (min-width: 48em) {
-  .steps--flow { padding-top: 0.5rem; }
+  .step { padding-left: 0; padding-top: 2.6rem; }
+  .step::before { top: 0.7rem; transform: translateY(-50%); }
   .steps__line {
-    display: block; position: absolute; top: -0.5rem; left: 0; right: 0; height: 2px;
+    left: 0; right: 0; width: auto; top: 0.7rem; bottom: auto; height: 2px; margin-top: -1px;
     background: linear-gradient(90deg, var(--color-accent) 0%, color-mix(in srgb, var(--color-accent) 30%, transparent) 100%);
-    opacity: 0.5; overflow: visible; z-index: 0;
   }
   .steps__packet {
-    position: absolute; top: 50%; left: 0; width: 8px; height: 8px; margin-top: -4px;
+    display: block; position: absolute; top: 50%; left: 0; width: 8px; height: 8px; margin-top: -4px;
     border-radius: 50%; background: var(--color-cta);
     box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-cta) 22%, transparent);
     animation: packet-flow 5.5s var(--ease-in-out) infinite;
@@ -498,7 +539,6 @@ p { text-wrap: pretty; }
 .locale-band { position: relative; height: clamp(220px, 40vh, 440px); overflow: hidden; }
 .locale-band img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .locale-band::after { content: ""; position: absolute; inset: 0; z-index: 0; background: linear-gradient(90deg, rgba(17,22,25,0.82), rgba(17,22,25,0.35) 60%, rgba(17,22,25,0.55)); }
-.locale-band .motif-field--watermark { z-index: 1; }
 .locale-band__inner { position: relative; z-index: 2; height: 100%; display: flex; flex-direction: column; justify-content: center; gap: 0.6rem; }
 .locale-band__title { color: var(--paper); font-size: var(--fs-500); max-width: 24ch; }
 .locale-band__meta { color: var(--steel-300); font-family: var(--font-mono); font-size: var(--fs-100); letter-spacing: var(--tracking-wide); }
