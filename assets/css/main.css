@@ -297,6 +297,7 @@ p { text-wrap: pretty; }
 .hero__title { font-size: var(--fs-800); margin-top: 1.1rem; max-width: 17ch; }
 .hero__title .accent { color: var(--orange-400); }
 .hero__lead { margin-top: 1.4rem; max-width: 44ch; color: var(--steel-300); font-size: var(--fs-400); }
+.hero__lead-accent { color: var(--green-400); }
 .hero__actions { margin-top: 2.2rem; display: flex; flex-wrap: wrap; gap: 0.9rem; }
 .hero__meta { margin-top: 2.4rem; display: flex; flex-wrap: wrap; gap: 0.6rem 1.6rem; font-family: var(--font-mono); font-size: var(--fs-100); color: var(--steel-400); letter-spacing: 0.02em; }
 .hero__meta li { display: inline-flex; align-items: center; gap: 0.5rem; }
