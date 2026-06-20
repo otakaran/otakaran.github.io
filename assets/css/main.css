@@ -546,13 +546,68 @@ p { text-wrap: pretty; }
 
 /* --- Booking + Contact ---------------------------------------------------- */
 .contact__grid { display: grid; gap: clamp(1.5rem, 0.5rem + 3vw, 3rem); align-items: start; }
-.panel { background: var(--color-bg-raised); border: var(--border-structure); border-radius: var(--radius-lg); padding: clamp(1.5rem, 1rem + 1.5vw, 2.25rem); }
+.panel { background: var(--color-bg-raised); border: var(--border-structure); border-radius: var(--radius-lg); padding: clamp(1.5rem, 1rem + 1.5vw, 2.25rem); min-width: 0; }
 .panel__head { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
 
 /* Scheduler placeholder shown until the component lands (P2) */
 .scheduler-mount { min-height: 18rem; display: grid; }
 .scheduler-fallback { display: grid; place-content: center; text-align: center; gap: 0.75rem; padding: 2rem; border: 1.5px dashed var(--color-border); border-radius: var(--radius-md); color: var(--color-ink-secondary); }
 .scheduler-fallback .dot { width: 0.6rem; height: 0.6rem; border-radius: 50%; background: var(--color-accent); margin-inline: auto; }
+
+/* --- <oja-scheduler> live booking UI -------------------------------------- */
+/* min-width:0 down the grid-item chain so the day rail's overflow-x scroll
+   clips instead of forcing the panel (and its grid column) to min-content. */
+.scheduler-mount, .oja-scheduler { min-width: 0; }
+.oja-scheduler { display: block; }
+.sched { display: grid; gap: 1.25rem; min-width: 0; }
+.sched > * { min-width: 0; }
+
+/* loading / empty / error states */
+.sched__state { display: grid; place-items: center; gap: 0.85rem; text-align: center; padding: 2rem 1rem; color: var(--color-ink-secondary); }
+.sched__state--err { padding-block: 1rem; }
+.sched__spinner { width: 1.6rem; height: 1.6rem; border-radius: 50%; border: 2px solid var(--color-border); border-top-color: var(--color-accent); animation: sched-spin 0.7s linear infinite; }
+@keyframes sched-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .sched__spinner { animation-duration: 2s; } }
+
+.sched__prompt { display: block; margin-bottom: 0.6rem; color: var(--color-ink-muted); }
+
+/* day rail */
+.sched__days { display: flex; gap: 0.5rem; overflow-x: auto; padding-bottom: 0.4rem; scroll-snap-type: x proximity; -webkit-overflow-scrolling: touch; }
+.sched__day { scroll-snap-align: start; flex: 0 0 auto; min-width: 4.25rem; display: grid; gap: 0.1rem; padding: 0.55rem 0.7rem; background: var(--color-bg); border: 1.5px solid var(--color-border); border-radius: var(--radius-md); cursor: pointer; color: var(--color-ink-secondary); transition: border-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out), background-color var(--dur-fast) var(--ease-out); }
+.sched__day:hover { border-color: var(--color-ink); color: var(--color-ink); }
+.sched__day.is-active { border-color: var(--color-accent); background: color-mix(in srgb, var(--color-accent) 12%, var(--color-bg)); color: var(--color-ink); }
+.sched__day-wd { font-family: var(--font-mono); font-size: var(--fs-50); letter-spacing: var(--tracking-wide); text-transform: uppercase; }
+.sched__day-dm { font-size: var(--fs-200); font-weight: var(--weight-semibold); }
+
+/* time grid */
+.sched__times { display: grid; grid-template-columns: repeat(auto-fill, minmax(5rem, 1fr)); gap: 0.5rem; }
+.sched__time { font-family: var(--font-mono); font-size: var(--fs-200); padding: 0.6rem 0.4rem; background: var(--color-bg); border: 1.5px solid var(--color-border); border-radius: var(--radius-sm); cursor: pointer; color: var(--color-ink); transition: border-color var(--dur-fast) var(--ease-out), background-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out); }
+.sched__time:hover { border-color: var(--color-ink); }
+.sched__time.is-active { background: var(--color-cta); border-color: var(--color-cta); color: var(--color-on-cta); }
+
+/* detail step (form / confirm) */
+.sched__detail { display: grid; gap: 1rem; padding-top: 1.25rem; border-top: 1px solid var(--color-hairline); }
+.sched__chosen { display: flex; align-items: baseline; gap: 0.6rem 0.85rem; flex-wrap: wrap; }
+.sched__chosen-label { color: var(--color-ink-muted); }
+.sched__chosen strong { font-size: var(--fs-300); }
+.sched__change { margin-left: auto; background: none; border: none; padding: 0; color: var(--color-accent); font: inherit; font-size: var(--fs-200); cursor: pointer; text-decoration: underline; }
+.sched__form { gap: 0.9rem; }
+.sched__turnstile { min-height: 65px; }
+.sched__status:not([hidden]) { margin-top: 0.2rem; }
+
+/* success */
+.sched__done { display: grid; place-items: center; gap: 0.6rem; text-align: center; padding: 1.5rem 0.5rem; }
+.sched__check { display: grid; place-items: center; width: 2.75rem; height: 2.75rem; border-radius: 50%; background: color-mix(in srgb, var(--color-accent) 16%, transparent); color: var(--color-accent); font-size: 1.4rem; font-weight: var(--weight-bold); }
+.sched__done-when { font-size: var(--fs-300); font-weight: var(--weight-semibold); }
+.sched__manage-link { font-size: var(--fs-200); color: var(--color-ink-secondary); }
+
+/* --- Manage-booking page (manage.html) ------------------------------------ */
+.manage { display: grid; gap: 1.1rem; margin-top: var(--nav-h); }
+.manage__when { margin: 0; }
+.manage__actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 0.4rem; }
+.manage__slot:not(:empty) { margin-top: 0.5rem; }
+.btn.is-danger { --_bg: transparent; --_fg: var(--orange-600); --_bd: var(--orange-600); }
+.btn.is-danger:hover { --_bg: var(--orange-600); --_fg: #fff; --_bd: var(--orange-600); }
 
 /* Forms */
 .form { display: grid; gap: 1.1rem; }
@@ -602,6 +657,7 @@ p { text-wrap: pretty; }
 .reveal-on [data-reveal][data-reveal-delay="1"] { transition-delay: 80ms; }
 .reveal-on [data-reveal][data-reveal-delay="2"] { transition-delay: 160ms; }
 .reveal-on [data-reveal][data-reveal-delay="3"] { transition-delay: 240ms; }
+.reveal-on [data-reveal][data-reveal-delay="4"] { transition-delay: 320ms; }
 @media (prefers-reduced-motion: reduce) {
   .reveal-on [data-reveal] { opacity: 1; transform: none; transition: none; }
 }

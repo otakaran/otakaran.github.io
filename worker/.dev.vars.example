@@ -1,0 +1,16 @@
+# Local-dev secrets for `wrangler dev`. Copy to worker/.dev.vars (git-ignored)
+# and fill in. Leaving a value empty keeps that feature in safe dev mode:
+#   - RESEND_API_KEY empty  -> emails stay queued in the outbox, never sent
+#   - TURNSTILE_SECRET empty -> Turnstile verification is skipped (always passes)
+#
+# Cloudflare Turnstile test keys that always pass (use during dev):
+#   site key  (frontend): 1x00000000000000000000AA
+#   secret key (here):    1x0000000000000000000000000000000AA
+
+RESEND_API_KEY=
+TURNSTILE_SECRET=1x0000000000000000000000000000000AA
+MGMT_TOKEN_SALT=dev-only-salt-not-for-production
+MEETING_URL=https://example.com/dev-meeting-link
+
+# Optional: open CORS for local curl/file testing.
+# ALLOWED_ORIGIN=*

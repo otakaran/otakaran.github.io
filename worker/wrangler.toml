@@ -1,0 +1,52 @@
+name = "oja-api"
+main = "src/index.js"
+compatibility_date = "2024-11-01"
+workers_dev = false
+
+# --- D1 ---------------------------------------------------------------------
+# Create once:  wrangler d1 create oja-booking
+# then paste the returned database_id below.
+[[d1_databases]]
+binding = "DB"
+database_name = "oja-booking"
+database_id = "REPLACE_WITH_D1_DATABASE_ID"
+
+# --- Cron: outbox retry + record expiry, every 15 minutes -------------------
+[triggers]
+crons = ["*/15 * * * *"]
+
+# --- Custom domain route ----------------------------------------------------
+# Bind api.otakar.dev to this Worker. The zone already lives on Cloudflare.
+[[routes]]
+pattern = "api.otakar.dev"
+custom_domain = true
+
+# --- Non-secret config (overridable; secrets are set with `wrangler secret put`)
+[vars]
+ALLOWED_ORIGIN  = "https://otakar.dev"
+SITE_ORIGIN     = "https://otakar.dev"
+BUSINESS_TZ     = "America/Los_Angeles"
+BUSINESS_START  = "10:00"
+BUSINESS_END    = "15:00"
+SLOT_MINUTES    = "30"
+BUFFER_MINUTES  = "15"
+MEETING_MINUTES = "30"
+NOTICE_HOURS    = "24"
+HORIZON_DAYS    = "45"
+RESEND_FROM     = "OJA Solutions <hello@otakar.dev>"
+OWNER_EMAIL     = "hello@otakar.dev"
+INQUIRY_EXPIRY_DAYS = "180"
+RATE_MAX            = "8"
+RATE_WINDOW_SECONDS = "3600"
+
+# US federal holidays, observed dates, 2026–2027 (no bookable slots on these
+# Pacific calendar days). Extend each year. Format: comma-separated YYYY-MM-DD.
+HOLIDAYS = "2026-01-01,2026-01-19,2026-02-16,2026-05-25,2026-06-19,2026-07-03,2026-09-07,2026-10-12,2026-11-11,2026-11-26,2026-12-25,2027-01-01,2027-01-18,2027-02-15,2027-05-31,2027-06-18,2027-07-05,2027-09-06,2027-10-11,2027-11-11,2027-11-25,2027-12-24"
+
+# --- Secrets (NOT stored here) ---------------------------------------------
+# Set with: wrangler secret put <NAME>
+#   RESEND_API_KEY     Resend API key
+#   TURNSTILE_SECRET   Cloudflare Turnstile secret key
+#   MGMT_TOKEN_SALT    long random string for hashing management tokens
+#   MEETING_URL        the private video meeting join link
+# For local dev, put the same names in worker/.dev.vars (git-ignored).

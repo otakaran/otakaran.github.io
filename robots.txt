@@ -1,4 +1,10 @@
 User-agent: *
 Allow: /
+# Internal/operational files are served verbatim by Pages but shouldn't be
+# indexed. (They contain no secrets; secrets are set via wrangler, never here.)
+Disallow: /worker/
+Disallow: /DEPLOY.md
+Disallow: /KNOWN-ISSUES.md
+Disallow: /manage.html
 
 Sitemap: https://otakar.dev/sitemap.xml
