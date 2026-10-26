@@ -10,10 +10,11 @@ Two independently-deployed parts:
 The site calls the API from the browser; the two share no build step. The API
 is **free-tier only** (Workers + D1 + Resend free limits; paid overages off).
 
-> ⚠️ **Launch gate first.** Do not merge to `master` until the 7 invented
-> placeholders are grounded or removed: `grep -rn 'data-draft' index.html`
-> (see `HANDOFF.md` → "Invented content to ground"). GitHub Pages serves
-> `master`, so merging = going live.
+> **Status 2026-10-25:** the site is LIVE on otakar.dev from `master`. The 7
+> illustrative `data-draft="invented"` items shipped as-is (owner's call to
+> launch); remove or ground them any time: `grep -n 'data-draft' index.html`.
+> The API (`worker/`) is NOT deployed yet — the page runs on its email
+> fallbacks until §2.3–2.6 are done.
 
 ---
 
@@ -42,16 +43,12 @@ shows the email fallback and the inquiry form falls back to a `mailto:`.
 Prereqs: a Cloudflare account (the `otakar.dev` zone already lives there), a
 Resend account, Node 20+, and `cd worker && npm install`.
 
-### 2.1 Log in & create the database
-```bash
-cd worker
-npx wrangler login
-npx wrangler d1 create oja-booking
-```
-Copy the returned `database_id` into `wrangler.toml` (replace
-`REPLACE_WITH_D1_DATABASE_ID`).
+### 2.1 Log in & create the database — DONE 2026-10-25
+`oja-booking` exists (id `18a16ae7-27f1-4313-9ec1-dd3cb09a479c`, region WNAM) and
+is already in `wrangler.toml`. Nothing to do unless you recreate it.
 
-### 2.2 Apply the schema
+### 2.2 Apply the schema — DONE 2026-10-25
+`0001_init.sql` is applied remotely. For future migrations:
 ```bash
 npm run db:migrate:remote      # wrangler d1 migrations apply oja-booking --remote
 ```

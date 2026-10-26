@@ -18,9 +18,8 @@ Cross-reference: design/spec in the plan and `HANDOFF.md`; deploy steps in
   that means bookings/inquiries have **no bot challenge** — only the honeypot +
   per-IP rate limit. Set the secret and put the matching site key in
   `window.OJA.turnstileSiteKey` (`index.html` + `manage.html`).
-- **[high] Replace `database_id` in `worker/wrangler.toml`.** It ships as
-  `REPLACE_WITH_D1_DATABASE_ID`. `wrangler dev` tolerates the placeholder
-  locally; `wrangler deploy` needs the real id from `wrangler d1 create`.
+- ~~**[high] Replace `database_id` in `worker/wrangler.toml`.**~~ Done
+  2026-10-25: `oja-booking` created and migrated; id is in `wrangler.toml`.
 - **[high] Verify the Resend domain + that `hello@otakar.dev` can receive.**
   `RESEND_FROM` must be on a verified domain or all mail silently fails into the
   outbox; `hello@otakar.dev` is the owner-notify + reply-to inbox.

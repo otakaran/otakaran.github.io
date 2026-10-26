@@ -9,7 +9,7 @@ workers_dev = false
 [[d1_databases]]
 binding = "DB"
 database_name = "oja-booking"
-database_id = "REPLACE_WITH_D1_DATABASE_ID"
+database_id = "18a16ae7-27f1-4313-9ec1-dd3cb09a479c"
 
 # --- Cron: outbox retry + record expiry, every 15 minutes -------------------
 [triggers]
