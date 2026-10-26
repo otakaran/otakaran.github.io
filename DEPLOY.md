@@ -54,12 +54,14 @@ Checklist (as of 2026-10-25 none of these are on; plain `http://otakar.dev`,
 2. **HSTS** (same page): enable, max-age 6 months; leave *Include subdomains*
    and *Preload* off until every subdomain is confirmed HTTPS-only.
 3. **SSL/TLS mode**: keep *Full* (not Strict — GitHub has no cert for this host).
-4. **www**: deploy the redirect Worker in `www-redirect/` (see its README). It
-   creates the `www.otakar.dev` DNS record + certificate and 301s to the apex.
-   Needs the local `wrangler login` (already present on this Mac).
+4. **www** — DONE 2026-10-25: `oja-www-redirect` Worker deployed from
+   `www-redirect/` (custom domain `www.otakar.dev`, 301 to the apex, keeps
+   path + query). Redeploy with the command in its README after any change.
 
-The local wrangler OAuth login has `zone:read` only, so steps 1–3 need the
-dashboard or an API token with *Zone Settings: Edit* for otakar.dev. The
+The local wrangler OAuth login has `zone:read` only (verified 2026-10-25: zone
+`fa024aeb576bbc42e72c519755cae6dc` lists, but DNS records, every zone setting
+and rulesets return 403), so steps 1–3 need the dashboard or an API token with
+*Zone → Zone Settings: Edit* (+ *Zone: Read*) scoped to otakar.dev. The
 `CLOUDFLARE_API_TOKEN` used by the utah-snow CI exists only as a GitHub Actions
 secret and is (likely) Workers-scoped.
 
