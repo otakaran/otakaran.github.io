@@ -38,6 +38,33 @@ shows the email fallback and the inquiry form falls back to a `mailto:`.
 
 ---
 
+## 1b. Cloudflare-side hardening (zone settings; dashboard or a scoped API token)
+
+The site is served through Cloudflare's proxy, so HTTPS enforcement and security
+headers live at Cloudflare, **not** GitHub. GitHub Pages reports
+`https_certificate: null` for otakar.dev (the proxy prevents GitHub from
+provisioning one) — **never enable "Enforce HTTPS" on the GitHub Pages
+settings page**; it would redirect-loop and take the site down.
+
+Checklist (as of 2026-10-25 none of these are on; plain `http://otakar.dev`,
+`utah.otakar.dev` and `jana.otakar.dev` all answer 200 without redirecting):
+
+1. **Always Use HTTPS**: Cloudflare dashboard → otakar.dev → SSL/TLS → Edge
+   Certificates → *Always Use HTTPS* → On. Covers every proxied host in the zone.
+2. **HSTS** (same page): enable, max-age 6 months; leave *Include subdomains*
+   and *Preload* off until every subdomain is confirmed HTTPS-only.
+3. **SSL/TLS mode**: keep *Full* (not Strict — GitHub has no cert for this host).
+4. **www**: deploy the redirect Worker in `www-redirect/` (see its README). It
+   creates the `www.otakar.dev` DNS record + certificate and 301s to the apex.
+   Needs the local `wrangler login` (already present on this Mac).
+
+The local wrangler OAuth login has `zone:read` only, so steps 1–3 need the
+dashboard or an API token with *Zone Settings: Edit* for otakar.dev. The
+`CLOUDFLARE_API_TOKEN` used by the utah-snow CI exists only as a GitHub Actions
+secret and is (likely) Workers-scoped.
+
+---
+
 ## 2. Backend (Cloudflare Worker + D1 + Resend + Turnstile)
 
 Prereqs: a Cloudflare account (the `otakar.dev` zone already lives there), a

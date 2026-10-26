@@ -1,0 +1,11 @@
+# www.otakar.dev -> https://otakar.dev (301).
+# Deploy: cd www-redirect && ../worker/node_modules/.bin/wrangler deploy
+# custom_domain = true creates the DNS record + certificate for www.otakar.dev (zone is on Cloudflare).
+name = "oja-www-redirect"
+main = "src/index.js"
+compatibility_date = "2024-11-01"
+workers_dev = false
+
+[[routes]]
+pattern = "www.otakar.dev"
+custom_domain = true
