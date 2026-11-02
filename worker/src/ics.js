@@ -17,8 +17,12 @@ function icsStamp(date) {
 }
 
 /**
- * Build an ICS string for a single confirmed meeting.
+ * Build an ICS string for a single meeting.
  * status: "CONFIRMED" | "CANCELLED".
+ * method: defaults to REQUEST (invite) or CANCEL for a cancelled status; pass
+ *   "PUBLISH" for a plain "add this to your calendar" copy with no attendees
+ *   (what the owner gets — an invite addressed to its own organizer behaves
+ *   inconsistently across mail clients).
  */
 export function buildICS({
   uid,
@@ -33,13 +37,15 @@ export function buildICS({
   attendeeName,
   status = "CONFIRMED",
   sequence = 0,
+  method,
 }) {
+  const m = method || (status === "CANCELLED" ? "CANCEL" : "REQUEST");
   const lines = [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
     "PRODID:-//OJA Solutions//Booking//EN",
     "CALSCALE:GREGORIAN",
-    `METHOD:${status === "CANCELLED" ? "CANCEL" : "REQUEST"}`,
+    `METHOD:${m}`,
     "BEGIN:VEVENT",
     `UID:${icsEscape(uid)}`,
     `SEQUENCE:${sequence}`,

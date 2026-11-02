@@ -28,7 +28,7 @@
 
   <!-- Calendar panel -->
   <text x="56" y="134" class="h" font-size="18">Pick a time</text>
-  <text x="56" y="156" class="t" font-size="13" fill="#909aa1">Thursday, June 19</text>
+  <text x="56" y="156" class="t" font-size="13" fill="#909aa1">Thursday</text>
 
   <!-- slots -->
   <g>

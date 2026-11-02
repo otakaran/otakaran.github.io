@@ -154,7 +154,8 @@ curl -s -X POST https://api.otakar.dev/bookings \
 ```
 Then check: confirmation email arrives with a calendar (`.ics`) attachment
 and, if you booked from outside Pacific, your local time on the first line;
-the owner notification arrives at `hello@otakar.dev`; the management link opens
+the owner notification arrives at `hello@otakar.dev` with its own calendar entry
+(`.ics`, METHOD:PUBLISH — add it and the call is on your calendar); the management link opens
 `https://otakar.dev/manage.html?token=…` and can reschedule/cancel (the cancel
 email carries a `METHOD:CANCEL` invite).
 

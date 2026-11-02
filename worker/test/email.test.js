@@ -6,6 +6,8 @@ import {
   cancelVisitorMessage,
   reminderVisitorMessage,
   bookingOwnerMessage,
+  rescheduleOwnerMessage,
+  cancelOwnerMessage,
 } from "../src/email.js";
 
 const cfg = getConfig({ MEETING_URL: "https://meet.example.com/oja" });
@@ -51,6 +53,31 @@ describe("templates", () => {
   it("owner notice names the visitor's zone", () => {
     const m = bookingOwnerMessage(cfg, booking);
     expect(m.text).toContain("Europe/Prague");
+  });
+  it("owner notice attaches a PUBLISH calendar entry (same UID, no attendee)", () => {
+    const m = bookingOwnerMessage(cfg, booking);
+    expect(m.icsFilename).toBe("discovery-call.ics");
+    expect(m.icsContent).toContain("METHOD:PUBLISH");
+    expect(m.icsContent).toContain("UID:bk_1@otakar.dev");
+    expect(m.icsContent).toContain("SUMMARY:Discovery call: Ada");
+    expect(m.icsContent).toContain("LOCATION:https://meet.example.com/oja");
+    expect(m.icsContent).toContain("ada@example.com"); // in the description, for context
+    expect(m.icsContent).not.toContain("ATTENDEE");
+  });
+  it("owner reschedule bumps SEQUENCE on the same UID", () => {
+    const m = rescheduleOwnerMessage(cfg, booking, "2026-06-23T17:00:00.000Z");
+    expect(m.icsContent).toContain("METHOD:PUBLISH");
+    expect(m.icsContent).toContain("SEQUENCE:1");
+    expect(m.icsContent).toContain("UID:bk_1@otakar.dev");
+    expect(m.icsContent).toContain("DTSTART:20260624T170000Z");
+  });
+  it("owner cancel notice carries a METHOD:CANCEL entry", () => {
+    const m = cancelOwnerMessage(cfg, booking);
+    expect(m.icsFilename).toBe("discovery-call-canceled.ics");
+    expect(m.icsContent).toContain("METHOD:CANCEL");
+    expect(m.icsContent).toContain("STATUS:CANCELLED");
+    expect(m.icsContent).toContain("SUMMARY:CANCELED: Discovery call: Ada");
+    expect(m.icsContent).not.toContain("LOCATION:");
   });
   it("cancellation attaches a METHOD:CANCEL invite with the same UID", () => {
     const m = cancelVisitorMessage(cfg, booking);

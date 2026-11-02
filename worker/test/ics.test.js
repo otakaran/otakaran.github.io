@@ -32,6 +32,14 @@ describe("buildICS", () => {
   it("uses CRLF line endings", () => {
     expect(ics).toContain("\r\n");
   });
+  it("defaults METHOD to REQUEST, CANCEL when cancelled, and honors an explicit PUBLISH", () => {
+    const base = { uid: "u@x", start: new Date("2026-06-24T17:00:00Z"), end: new Date("2026-06-24T17:30:00Z"), summary: "s", organizerEmail: "o@x" };
+    expect(buildICS(base)).toContain("METHOD:REQUEST");
+    expect(buildICS({ ...base, status: "CANCELLED" })).toContain("METHOD:CANCEL");
+    const pub = buildICS({ ...base, method: "PUBLISH" });
+    expect(pub).toContain("METHOD:PUBLISH");
+    expect(pub).not.toContain("ATTENDEE");
+  });
 });
 
 describe("toBase64", () => {

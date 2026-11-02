@@ -54,7 +54,11 @@
       var addr = user + "@" + domain;
       if (el.tagName === "FORM") { el.setAttribute("action", "mailto:" + addr); return; }
       var subject = el.getAttribute("data-eml-subject");
-      el.setAttribute("href", "mailto:" + addr + (subject ? "?subject=" + encodeURIComponent(subject) : ""));
+      var body = el.getAttribute("data-eml-body");
+      var qs = [];
+      if (subject) qs.push("subject=" + encodeURIComponent(subject));
+      if (body) qs.push("body=" + encodeURIComponent(body));
+      el.setAttribute("href", "mailto:" + addr + (qs.length ? "?" + qs.join("&") : ""));
       // Reveal the real address only where the markup opted in with an [at] placeholder.
       if (el.children.length === 0 && /\[at\]/i.test(el.textContent)) el.textContent = addr;
     });

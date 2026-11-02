@@ -28,7 +28,9 @@ hard double-book guard → conflicting writes return **409**.
 
 Bookings may carry the visitor's IANA `tz` (validated with `Intl`, dropped if
 bogus). Visitor emails then lead with their local time and show Pacific as a
-second line; owner notices name the zone. The cron queues **one reminder**
+second line; owner notices name the zone and attach the owner's own calendar
+entry (`.ics`, METHOD:PUBLISH, same UID as the visitor's invite — updated on
+reschedule, METHOD:CANCEL on cancel). The cron queues **one reminder**
 per booking once its start is within `REMINDER_HOURS` (default 24; `0`
 disables), at least an hour after it was created, and marks `reminder_sent_at`
 first so a retried run can't double-send. Rescheduling resets the reminder.

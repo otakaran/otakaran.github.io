@@ -132,7 +132,10 @@
   function fmtTime(tz, d) { return fmt(tz, { hour: "numeric", minute: "2-digit" }).format(d); }
   function fmtRange(tz, a, b) {
     var f = fmt(tz, { hour: "numeric", minute: "2-digit" });
-    if (typeof f.formatRange === "function") {
+    if (typeof f.formatRange === "function" && dateKey(tz, a) === dateKey(tz, b)) {
+      // Same calendar day in this zone: formatRange gives "2:00 – 2:30 PM".
+      // Across midnight (late Pacific slots seen from Europe/Asia) it would
+      // prepend dates, so fall through to plain start – end instead.
       try { return f.formatRange(a, b).replace(/\s*[–-]\s*/, " – "); } catch (e) {}
     }
     return f.format(a) + " – " + f.format(b);
@@ -922,7 +925,8 @@
     var a = el("a", { class: "btn btn--primary", href: "#book", text: label });
     var user = (window.OJA && window.OJA.emailUser) || "hello";
     var domain = (window.OJA && window.OJA.emailDomain) || "otakar.dev";
-    a.setAttribute("href", "mailto:" + user + "@" + domain + "?subject=" + encodeURIComponent("Discovery call — OJA Solutions"));
+    var body = "Hi Otakar,\n\nI'd like to book a 30-minute discovery call. A couple of times that work for me (with my time zone):\n1. \n2. \n\nWhat I'd like to cover: ";
+    a.setAttribute("href", "mailto:" + user + "@" + domain + "?subject=" + encodeURIComponent("Discovery call — OJA Solutions") + "&body=" + encodeURIComponent(body));
     return a;
   };
 

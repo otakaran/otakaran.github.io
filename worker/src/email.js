@@ -76,6 +76,37 @@ ${bodyHtml}
 
 // --- Templates -------------------------------------------------------------
 
+/**
+ * The owner's own calendar entry for a booking (attached to every owner
+ * notice so a call lands on the calendar without retyping). METHOD:PUBLISH,
+ * no ATTENDEE: it's a record for the organizer, not an invitation. Same UID
+ * as the visitor's invite so reschedules/cancellations line up.
+ */
+function ownerICS(cfg, booking, { status = "CONFIRMED", sequence = 0 } = {}) {
+  const cancelled = status === "CANCELLED";
+  const lines = [
+    `Discovery call booked on otakar.dev${cancelled ? " — CANCELED" : ""}.`,
+    `Name: ${booking.name}`,
+    `Email: ${booking.email}`,
+    booking.topic ? `Topic: ${booking.topic}` : "",
+    booking.tz && booking.tz !== cfg.tz ? `Visitor's zone: ${booking.tz}` : "",
+    cancelled ? "" : `Join: ${cfg.meetingUrl}`,
+  ].filter(Boolean);
+  return buildICS({
+    uid: `${booking.id}@otakar.dev`,
+    method: cancelled ? "CANCEL" : "PUBLISH",
+    status,
+    sequence,
+    start: new Date(booking.slot_start_utc),
+    end: new Date(booking.slot_end_utc),
+    summary: `${cancelled ? "CANCELED: " : ""}Discovery call: ${booking.name}`,
+    description: lines.join("\n"),
+    location: cancelled ? "" : cfg.meetingUrl,
+    organizerEmail: cfg.ownerEmail,
+    organizerName: "Otakar Andrysek",
+  });
+}
+
 export function bookingVisitorMessage(cfg, booking, manageUrl) {
   const ics = buildICS({
     uid: `${booking.id}@otakar.dev`,
@@ -139,6 +170,8 @@ export function bookingOwnerMessage(cfg, booking) {
       `Name:  ${booking.name}`,
       `Email: ${booking.email}`,
       booking.topic ? `Topic: ${booking.topic}` : ``,
+      ``,
+      `Calendar entry attached. The visitor got a confirmation with the join link and a manage link.`,
     ]
       .filter(Boolean)
       .join("\n"),
@@ -147,8 +180,11 @@ export function bookingOwnerMessage(cfg, booking) {
 <p><strong>When:</strong> ${esc(when)}${esc(ownerTzNote(cfg, booking))}<br>
 <strong>Name:</strong> ${esc(booking.name)}<br>
 <strong>Email:</strong> <a href="mailto:${esc(booking.email)}">${esc(booking.email)}</a>
-${booking.topic ? `<br><strong>Topic:</strong> ${esc(booking.topic)}` : ""}</p>`
+${booking.topic ? `<br><strong>Topic:</strong> ${esc(booking.topic)}` : ""}</p>
+<p style="color:#586771">Calendar entry attached. The visitor got a confirmation with the join link and a manage link.</p>`
     ),
+    icsFilename: "discovery-call.ics",
+    icsContent: ownerICS(cfg, booking),
   };
 }
 
@@ -190,12 +226,15 @@ export function cancelOwnerMessage(cfg, booking) {
   return {
     to: cfg.ownerEmail,
     subject: `Canceled: ${booking.name} — ${when}`,
-    text: `Booking canceled.\n\nWhen: ${when}\nName: ${booking.name}\nEmail: ${booking.email}`,
+    text: `Booking canceled.\n\nWhen: ${when}\nName: ${booking.name}\nEmail: ${booking.email}\n\nCalendar cancellation attached.`,
     html: wrapHtml(
       `<h2 style="margin:0 0 12px">Booking canceled</h2>
 <p><strong>When:</strong> ${esc(when)}<br><strong>Name:</strong> ${esc(booking.name)}<br>
-<strong>Email:</strong> ${esc(booking.email)}</p>`
+<strong>Email:</strong> ${esc(booking.email)}</p>
+<p style="color:#586771">Calendar cancellation attached.</p>`
     ),
+    icsFilename: "discovery-call-canceled.ics",
+    icsContent: ownerICS(cfg, booking, { status: "CANCELLED", sequence: 2 }),
   };
 }
 
@@ -239,12 +278,15 @@ export function rescheduleOwnerMessage(cfg, booking, prevStartUtc) {
   return {
     to: cfg.ownerEmail,
     subject: `Rescheduled: ${booking.name} — ${when}`,
-    text: `Booking rescheduled.\n\nWas: ${prev}\nNow: ${when}${ownerTzNote(cfg, booking)}\nName: ${booking.name}\nEmail: ${booking.email}`,
+    text: `Booking rescheduled.\n\nWas: ${prev}\nNow: ${when}${ownerTzNote(cfg, booking)}\nName: ${booking.name}\nEmail: ${booking.email}\n\nUpdated calendar entry attached.`,
     html: wrapHtml(
       `<h2 style="margin:0 0 12px">Booking rescheduled</h2>
 <p><strong>Was:</strong> ${esc(prev)}<br><strong>Now:</strong> ${esc(when)}<br>
-<strong>Name:</strong> ${esc(booking.name)}<br><strong>Email:</strong> ${esc(booking.email)}</p>`
+<strong>Name:</strong> ${esc(booking.name)}<br><strong>Email:</strong> ${esc(booking.email)}</p>
+<p style="color:#586771">Updated calendar entry attached.</p>`
     ),
+    icsFilename: "discovery-call.ics",
+    icsContent: ownerICS(cfg, booking, { sequence: 1 }),
   };
 }
 

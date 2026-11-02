@@ -41,11 +41,18 @@
       loadTurnstile();
     }
 
-    function setStatus(state, msg) {
+    function setStatus(state, msg, link) {
       if (!status) return;
       status.hidden = false;
       status.setAttribute("data-state", state);
       status.textContent = msg;
+      if (link) {
+        var a = document.createElement("a");
+        a.href = link.href;
+        a.textContent = link.text;
+        status.appendChild(document.createTextNode(" "));
+        status.appendChild(a);
+      }
     }
 
     form.addEventListener("submit", function (e) {
@@ -97,19 +104,30 @@
             if (window.turnstile) try { window.turnstile.reset(); } catch (e) {}
             if (submit) submit.disabled = false;
           } else {
-            failToEmail(r.data && r.data.message);
+            failToEmail(r.status, body);
           }
         })
-        .catch(function () { failToEmail(); });
+        .catch(function () { failToEmail(0, body); });
     });
 
-    function failToEmail(msg) {
+    /* The API couldn't take the message (not open yet, outage, network).
+       Don't make the visitor retype it: build a mailto: that carries what
+       they wrote, open it, and leave a link in case the mail app didn't open. */
+    function failToEmail(status, data) {
       if (submit) submit.disabled = false;
       var user = (window.OJA && window.OJA.emailUser) || "hello";
       var domain = (window.OJA && window.OJA.emailDomain) || "otakar.dev";
-      setStatus("err", (msg ? msg + " " : "Couldn't send just now. ") + "You can email " + user + "@" + domain + " directly instead.");
-      // Make the bot-safe mailto immediately usable as a manual fallback.
-      form.setAttribute("action", "mailto:" + user + "@" + domain);
+      var addr = user + "@" + domain;
+      var subject = "Project inquiry" + (data.project_type ? " — " + data.project_type : "") + " (" + data.name + ")";
+      var lines = ["Hi Otakar,", "", data.message, "", "— " + data.name + " · " + data.email];
+      if (data.project_type) lines.push("Project type: " + data.project_type);
+      if (data.timeline) lines.push("Timeline: " + data.timeline);
+      var href = "mailto:" + addr + "?subject=" + encodeURIComponent(subject) +
+        "&body=" + encodeURIComponent(lines.join("\n").slice(0, 1800));
+      form.setAttribute("action", "mailto:" + addr);
+      var why = status === 503 ? "The form isn't taking messages yet, so" : "The form couldn't send just now, so";
+      setStatus("err", why + " I've handed your message to your email app. If nothing opened,", { href: href, text: "send it by email instead" });
+      try { window.location.href = href; } catch (e) {}
     }
   });
 
