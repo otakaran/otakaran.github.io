@@ -1,0 +1,44 @@
+# Publish ONLY the public site files to GitHub Pages. The repo also holds the
+# Worker source, deploy docs, scripts and an archived old site; with the legacy
+# "deploy from branch" mode all of that was served verbatim at otakar.dev/…
+# (found by the 2026-11-01 client review). Pages is set to build_type=workflow,
+# so this job is the deploy; nothing outside the allow-list below is published.
+name: pages
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Assemble the public site
+        run: |
+          set -euo pipefail
+          mkdir -p _site
+          cp index.html manage.html privacy.html 404.html favicon.ico robots.txt sitemap.xml site.webmanifest CNAME .nojekyll _site/
+          cp -R assets _site/assets
+          rm -rf _site/assets/NEW_ASSETS _site/assets/.DS_Store
+          find _site -name '.DS_Store' -delete
+          echo "Published files:"; find _site -type f | sort | sed 's#^_site##' | head -100
+          test -f _site/index.html && test -f _site/assets/css/main.css
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - id: deployment
+        uses: actions/deploy-pages@v4
