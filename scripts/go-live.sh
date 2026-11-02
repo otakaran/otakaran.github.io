@@ -15,7 +15,8 @@ API=${API_BASE:-https://api.otakar.dev}
 ask() { # ask VAR "prompt" [secret]
   local var=$1 prompt=$2 secret=${3:-}
   if [ -n "${!var:-}" ]; then echo "  $var: taken from environment"; return; fi
-  if [ -n "$secret" ]; then read -r -s -p "$prompt: " "$var"; echo; else read -r -p "$prompt: " "$var"; fi
+  # EOF (no terminal / piped input) counts as "skip", not as an error.
+  if [ -n "$secret" ]; then read -r -s -p "$prompt: " "$var" || true; echo; else read -r -p "$prompt: " "$var" || true; fi
 }
 echo "OJA booking API — go live. Blank = skip."
 ask RESEND_API_KEY     "Resend API key" secret
