@@ -34,6 +34,7 @@ if [ -n "${TURNSTILE_SECRET:-}" ]; then put TURNSTILE_SECRET "$TURNSTILE_SECRET"
 if [ -n "${TURNSTILE_SITE_KEY:-}" ]; then
   if [[ ! "$TURNSTILE_SITE_KEY" =~ ^0x[A-Za-z0-9_-]+$ ]]; then echo "  Turnstile site key looks wrong (expected 0x…) — skipped"; else
     cd "$ROOT"
+    if ! git diff --cached --quiet; then echo "  git stage is not empty — commit or unstage first, then re-run"; exit 1; fi
     for f in index.html manage.html; do
       perl -pi -e 's/(turnstileSiteKey:\s*)"[^"]*"/$1"'"$TURNSTILE_SITE_KEY"'"/' "$f"
     done
