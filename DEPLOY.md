@@ -4,7 +4,7 @@ Two independently-deployed parts:
 
 | Part | Where it runs | How it deploys |
 | --- | --- | --- |
-| **Site** (`index.html`, `manage.html`, `assets/`) | GitHub Pages → `otakar.dev` | push to `master` (Pages serves repo root) |
+| **Site** (`index.html`, `manage.html`, `privacy.html`, `assets/`) | GitHub Pages → `otakar.dev` | push to `master` → `.github/workflows/pages.yml` publishes an allow-list of site files (Pages `build_type=workflow` since 2026-11-01; `worker/`, docs, scripts and `old_web/` are no longer served) |
 | **API** (`worker/`) | Cloudflare Worker + D1 → `api.otakar.dev` | `wrangler deploy` |
 
 The site calls the API from the browser; the two share no build step. The API
@@ -25,8 +25,12 @@ is **free-tier only** (Workers + D1 + Resend free limits; paid overages off).
 
 ## 1. Frontend (GitHub Pages)
 
-Already configured: Pages serves the repo **root** of `master` at `otakar.dev`
-(`CNAME` + `.nojekyll` present). To release the reworked site + booking UI:
+Pages is set to **deploy from GitHub Actions**: every push to `master` runs
+`pages.yml`, which copies only the public files (index/manage/privacy/404,
+`assets/`, favicon, robots, sitemap, manifest, CNAME) and deploys them. Nothing
+else in the repo is reachable at otakar.dev. To go back to the old
+"serve the branch root" mode: `gh api -X PUT repos/otakaran/otakaran.github.io/pages -f build_type=legacy`.
+To release a site change:
 
 1. (Done) The example builds are labeled as illustrations on the page.
 2. Set the production Turnstile **site key** in both `index.html` and
