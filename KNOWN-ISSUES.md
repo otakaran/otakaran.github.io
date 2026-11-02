@@ -21,8 +21,9 @@ Cross-reference: design/spec in the plan and `HANDOFF.md`; deploy steps in
   *skips* Turnstile verification by design (so dev works without keys). In prod
   that means bookings/inquiries have **no bot challenge** — only the honeypot +
   per-IP rate limit. Set the secret and put the matching site key in
-  `window.OJA.turnstileSiteKey` (`index.html` + `manage.html`). `/health`
-  reports it as a warning.
+  `window.OJA.turnstileSiteKey` (`index.html` + `manage.html`). Deliberately
+  NOT reported on the public `/health` (it would advertise the gap); check with
+  `npx wrangler secret list`. `scripts/go-live.sh` sets all of this in one go.
 - ~~**[high] Replace `database_id` in `worker/wrangler.toml`.**~~ Done
   2026-10-25: `oja-booking` created and migrated; id is in `wrangler.toml`.
 - **[high] Verify the Resend domain + that `hello@otakar.dev` can receive.**

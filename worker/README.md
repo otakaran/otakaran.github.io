@@ -16,7 +16,7 @@ the developer reference.
 | POST | `/bookings/:token/reschedule` | move a booking |
 | POST | `/bookings/:token/cancel` | cancel a booking |
 | POST | `/inquiries` | project inquiry → owner notify + auto-reply |
-| GET  | `/health` | liveness + readiness (`ready`, `missing[]`, `warnings[]`) |
+| GET  | `/health` | liveness + readiness (`ready`, `missing[]` — required secrets only) |
 | —    | `scheduled()` | cron: queue pre-call reminders, retry email outbox, expire records, sweep |
 
 ## Booking rules (configurable in `wrangler.toml [vars]`)

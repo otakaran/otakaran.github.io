@@ -34,8 +34,9 @@ export default {
 
     const state = readiness(cfg);
     if (url.pathname === "/" || url.pathname === "/health") {
-      // Names of absent config only — never values.
-      return reply({ ok: true, service: "oja-api", ready: state.ready, missing: state.missing, warnings: state.warnings });
+      // Names of absent *required* config only — never values, and no hint about
+      // optional protections (Turnstile) on a public endpoint.
+      return reply({ ok: true, service: "oja-api", ready: state.ready, missing: state.missing });
     }
 
     if (!originAllowed(origin, cfg.allowedOrigin)) {

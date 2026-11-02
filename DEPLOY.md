@@ -104,7 +104,12 @@ npm run db:migrate:remote      # wrangler d1 migrations apply oja-booking --remo
 2. Copy the **site key** → frontend `window.OJA.turnstileSiteKey` (step 1.2).
 3. Copy the **secret key** → set it as `TURNSTILE_SECRET` (next step).
 
-### 2.5 Set secrets
+### 2.5 Set secrets — or run `scripts/go-live.sh`
+`scripts/go-live.sh` (repo root) prompts for the Resend key, meeting URL and
+Turnstile keys, sets the Worker secrets via stdin, writes the Turnstile site
+key into both HTML files, commits + pushes, and polls `/health` until
+`ready:true`. Blank answers skip a value, so it's safe to run it piecemeal.
+Manual equivalent:
 ```bash
 npx wrangler secret put RESEND_API_KEY      # from Resend          ← still needed
 npx wrangler secret put TURNSTILE_SECRET    # from Turnstile       ← still needed (optional but recommended)
@@ -187,12 +192,14 @@ bookings` to see what has gone out.
 **Logs:** `npx wrangler tail`.
 
 **CI:** `.github/workflows/worker-tests.yml` runs `npm test` for `worker/` on
-every push/PR touching it. Deploys stay manual from this machine (wrangler
-OAuth login); to automate them, create a Cloudflare API token (Workers Scripts
-Edit, D1 Edit, Workers Routes Edit, Zone Read on otakar.dev), store it with
-`gh secret set CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID` in this repo,
-and add a `cloudflare/wrangler-action` job — the utah-snow repo's `ci.yml` is
-a working template.
+every push/PR touching it. `.github/workflows/deploy-worker.yml` (manual
+"Run workflow" button, or `gh workflow run deploy-worker.yml`) runs the tests,
+applies remote migrations and deploys. `CLOUDFLARE_ACCOUNT_ID` is already set
+on the repo; it only needs `CLOUDFLARE_API_TOKEN` — create one in the
+Cloudflare dashboard with Workers Scripts Edit, D1 Edit, Workers Routes Edit
+and Zone Read on otakar.dev (the utah-snow CI token has the same shape; tokens
+can't be copied between repos), then `gh secret set CLOUDFLARE_API_TOKEN`.
+Until then, deploy from this machine with `npm run deploy` (wrangler OAuth).
 
 **Swapping schedulers later:** the front end talks to a provider interface
 (`assets/js/scheduler/providers/`). A Cal.com/Calendly move is a new provider
