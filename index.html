@@ -16,7 +16,7 @@
   <meta name="description" content="OJA Solutions is Otakar Andrysek's AI-engineering practice: custom AI apps and assistants, websites and web apps, workflow automation, and Jira engineering for SMBs, startups, and operations teams. Based in Oregon, working worldwide.">
   <link rel="canonical" href="https://otakar.dev/">
   <meta name="theme-color" content="#111619">
-  <meta name="color-scheme" content="light dark">
+  <meta name="color-scheme" content="light">
 
   <!-- Icons / manifest -->
   <link rel="icon" href="/favicon.ico" sizes="48x48">
@@ -346,6 +346,14 @@
 
           </div>
         </div>
+
+        <div class="cta-row" data-reveal>
+          <div class="cta-row__text">
+            <p class="cta-row__title">Have a bottleneck like one of these?</p>
+            <p class="cta-row__sub">A free 30-minute call is the fastest way to find out what's worth building.</p>
+          </div>
+          <a class="btn btn--primary" href="#book">Book a discovery call <span class="btn__arrow" aria-hidden="true">→</span></a>
+        </div>
       </div>
     </section>
 
@@ -457,7 +465,7 @@
           <span class="steps__line" aria-hidden="true"><span class="steps__packet"></span></span>
           <div class="step" data-reveal>
             <h3 class="step__title">Discovery</h3>
-            <p class="step__body">A 30-minute call to understand the workflow, the friction, and what "done" looks like.</p>
+            <p class="step__body">A <a href="#book">30-minute call</a> to understand the workflow, the friction, and what "done" looks like.</p>
           </div>
           <div class="step" data-reveal data-reveal-delay="1">
             <h3 class="step__title">Scope &amp; plan</h3>
@@ -484,6 +492,9 @@
       <div class="container locale-band__inner">
         <p class="locale-band__title">Based in Oregon. Working worldwide.</p>
         <p class="locale-band__meta">Beaverton · Portland · Bilingual EN / CZ</p>
+        <div class="locale-band__cta">
+          <a class="btn btn--primary" href="#book">Book a discovery call <span class="btn__arrow" aria-hidden="true">→</span></a>
+        </div>
       </div>
     </section>
 
@@ -524,15 +535,18 @@
         <header class="section__head" data-reveal>
           <p class="section__index eyebrow">06 — Get in touch</p>
           <h2 class="section__title" id="book-title">Book a discovery call</h2>
-          <p class="section__intro lead measure">A free 30-minute call to talk through your workflow and whether there's a good fit. Prefer to write first? Use the form.</p>
+          <p class="section__intro lead measure">A free 30-minute video call to talk through your workflow and whether there's a good fit. Pick a time below, or send a note if you'd rather write first.</p>
         </header>
 
         <div class="contact__grid">
-          <!-- Scheduler (component lands in a later phase) -->
-          <div class="panel" data-reveal>
+          <!-- Live scheduler (<oja-scheduler>, assets/js/scheduler/). The static
+               fallback below is what visitors see if the API or JS is unavailable. -->
+          <div class="panel panel--sched" data-reveal>
             <div class="panel__head">
-              <h3>Schedule</h3>
-              <span class="tag">30 min · video</span>
+              <div>
+                <h3>Pick a time</h3>
+                <p class="panel__sub">A free 30-minute video call. You'll get a confirmation and calendar invite by email.</p>
+              </div>
             </div>
             <div class="scheduler-mount" id="scheduler" data-meeting="discovery-30">
               <div class="scheduler-fallback">
@@ -544,10 +558,13 @@
             </div>
           </div>
 
-          <!-- Inquiry form (wired to the backend in a later phase; mailto fallback now) -->
+          <!-- Inquiry form: posts to the API via contact.js; mailto fallback without it. -->
           <div class="panel" data-reveal data-reveal-delay="1">
             <div class="panel__head">
-              <h3>Project inquiry</h3>
+              <div>
+                <h3>Or send a message</h3>
+                <p class="panel__sub">I reply personally, usually within a business day.</p>
+              </div>
             </div>
             <form class="form" id="inquiry-form" method="post" enctype="text/plain" data-endpoint="https://api.otakar.dev/inquiries" data-eml-user="hello" data-eml-domain="otakar.dev">
               <div class="form__row form__row--2">

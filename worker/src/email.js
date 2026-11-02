@@ -10,10 +10,10 @@ import { buildICS, toBase64 } from "./ics.js";
 const MAX_ATTEMPTS = 6;
 const BACKOFF_MIN = [1, 5, 15, 60, 180, 720]; // minutes per attempt
 
-/** Human-readable slot, e.g. "Thursday, June 25, 2026 at 10:00 AM PDT". */
-export function formatSlot(cfg, startUTC) {
+/** Human-readable slot in a zone, e.g. "Thursday, June 25, 2026 at 10:00 AM PDT". */
+export function formatSlotIn(tz, startUTC) {
   return new Intl.DateTimeFormat("en-US", {
-    timeZone: cfg.tz,
+    timeZone: tz,
     weekday: "long",
     year: "numeric",
     month: "long",
@@ -22,6 +22,48 @@ export function formatSlot(cfg, startUTC) {
     minute: "2-digit",
     timeZoneName: "short",
   }).format(startUTC);
+}
+/** Slot in the business zone (Pacific). */
+export function formatSlot(cfg, startUTC) {
+  return formatSlotIn(cfg.tz, startUTC);
+}
+
+/**
+ * The slot as the visitor should read it. If they booked from another zone,
+ * their local time comes first and Pacific follows; otherwise just Pacific.
+ *   { primary, secondary, tz }  — secondary is "" when the zones agree.
+ */
+export function visitorWhen(cfg, booking) {
+  const start = new Date(booking.slot_start_utc);
+  const pacific = formatSlot(cfg, start);
+  const tz = booking.tz || "";
+  if (!tz || tz === cfg.tz) return { primary: pacific, secondary: "", tz: cfg.tz };
+  let local = "";
+  try {
+    local = formatSlotIn(tz, start);
+  } catch {
+    return { primary: pacific, secondary: "", tz: cfg.tz };
+  }
+  // Zones that currently share Pacific's clock (e.g. America/Vancouver) need no second line.
+  if (local.replace(/\s[A-Z]{2,5}$/, "") === pacific.replace(/\s[A-Z]{2,5}$/, "")) {
+    return { primary: pacific, secondary: "", tz: cfg.tz };
+  }
+  return { primary: `${local} (your time)`, secondary: `${pacific} (Pacific)`, tz };
+}
+/** Owner-side note on the visitor's zone, e.g. " · visitor's time: 1:00 PM CET (Europe/Prague)". */
+function ownerTzNote(cfg, booking) {
+  const w = visitorWhen(cfg, booking);
+  if (!w.secondary) return "";
+  return ` · visitor's time: ${w.primary.replace(" (your time)", "")} (${booking.tz})`;
+}
+function whenBlockText(cfg, booking) {
+  const w = visitorWhen(cfg, booking);
+  return w.secondary ? `  ${w.primary}\n  ${w.secondary}` : `  ${w.primary}`;
+}
+function whenBlockHtml(cfg, booking) {
+  const w = visitorWhen(cfg, booking);
+  return `<p style="font-size:17px;font-weight:600;margin:12px 0 4px">${esc(w.primary)}</p>` +
+    (w.secondary ? `<p style="color:#586771;margin:0 0 12px">${esc(w.secondary)}</p>` : "");
 }
 
 function wrapHtml(bodyHtml) {
@@ -35,7 +77,6 @@ ${bodyHtml}
 // --- Templates -------------------------------------------------------------
 
 export function bookingVisitorMessage(cfg, booking, manageUrl) {
-  const when = formatSlot(cfg, new Date(booking.slot_start_utc));
   const ics = buildICS({
     uid: `${booking.id}@otakar.dev`,
     start: new Date(booking.slot_start_utc),
@@ -55,10 +96,12 @@ export function bookingVisitorMessage(cfg, booking, manageUrl) {
       `Hi ${booking.name},`,
       ``,
       `Your 30-minute discovery call is confirmed for:`,
-      `  ${when}`,
+      whenBlockText(cfg, booking),
       ``,
       `Join link: ${cfg.meetingUrl}`,
       booking.topic ? `What you'd like to cover: ${booking.topic}` : ``,
+      ``,
+      `A calendar invite is attached. I'll send a reminder the day before.`,
       ``,
       `Need to change it? Reschedule or cancel here:`,
       `  ${manageUrl}`,
@@ -72,8 +115,9 @@ export function bookingVisitorMessage(cfg, booking, manageUrl) {
       `<h2 style="margin:0 0 12px">Your discovery call is booked</h2>
 <p>Hi ${esc(booking.name)},</p>
 <p>Your 30-minute discovery call is confirmed for:</p>
-<p style="font-size:17px;font-weight:600">${esc(when)}</p>
+${whenBlockHtml(cfg, booking)}
 <p><a href="${esc(cfg.meetingUrl)}" style="color:#157F4B">Join link</a></p>
+<p style="color:#586771">A calendar invite is attached. I'll send a reminder the day before.</p>
 ${booking.topic ? `<p style="color:#586771">What you'd like to cover: ${esc(booking.topic)}</p>` : ""}
 <p>Need to change it? <a href="${esc(manageUrl)}" style="color:#157F4B">Reschedule or cancel</a>.</p>
 <p>Talk soon,<br>Otakar</p>`
@@ -91,7 +135,7 @@ export function bookingOwnerMessage(cfg, booking) {
     text: [
       `New discovery call booked.`,
       ``,
-      `When:  ${when}`,
+      `When:  ${when}${ownerTzNote(cfg, booking)}`,
       `Name:  ${booking.name}`,
       `Email: ${booking.email}`,
       booking.topic ? `Topic: ${booking.topic}` : ``,
@@ -100,7 +144,7 @@ export function bookingOwnerMessage(cfg, booking) {
       .join("\n"),
     html: wrapHtml(
       `<h2 style="margin:0 0 12px">New discovery call booked</h2>
-<p><strong>When:</strong> ${esc(when)}<br>
+<p><strong>When:</strong> ${esc(when)}${esc(ownerTzNote(cfg, booking))}<br>
 <strong>Name:</strong> ${esc(booking.name)}<br>
 <strong>Email:</strong> <a href="mailto:${esc(booking.email)}">${esc(booking.email)}</a>
 ${booking.topic ? `<br><strong>Topic:</strong> ${esc(booking.topic)}` : ""}</p>`
@@ -109,7 +153,22 @@ ${booking.topic ? `<br><strong>Topic:</strong> ${esc(booking.topic)}` : ""}</p>`
 }
 
 export function cancelVisitorMessage(cfg, booking) {
-  const when = formatSlot(cfg, new Date(booking.slot_start_utc));
+  const w = visitorWhen(cfg, booking);
+  const when = w.primary.replace(" (your time)", "");
+  // METHOD:CANCEL with the same UID removes the event from calendars that imported it.
+  const ics = buildICS({
+    uid: `${booking.id}@otakar.dev`,
+    sequence: 2,
+    status: "CANCELLED",
+    start: new Date(booking.slot_start_utc),
+    end: new Date(booking.slot_end_utc),
+    summary: "Discovery call — OJA Solutions",
+    description: "This discovery call was canceled.",
+    organizerEmail: cfg.ownerEmail,
+    organizerName: "Otakar Andrysek",
+    attendeeEmail: booking.email,
+    attendeeName: booking.name,
+  });
   return {
     to: booking.email,
     subject: "Your discovery call is canceled — OJA Solutions",
@@ -121,6 +180,8 @@ export function cancelVisitorMessage(cfg, booking) {
 <p>Your discovery call for <strong>${esc(when)}</strong> has been canceled.</p>
 <p>Want to pick a new time? <a href="${esc(cfg.siteOrigin)}/#book" style="color:#157F4B">Book again</a>.</p>`
     ),
+    icsFilename: "discovery-call-canceled.ics",
+    icsContent: ics,
   };
 }
 
@@ -139,8 +200,9 @@ export function cancelOwnerMessage(cfg, booking) {
 }
 
 export function rescheduleVisitorMessage(cfg, booking, prevStartUtc, manageUrl) {
-  const when = formatSlot(cfg, new Date(booking.slot_start_utc));
-  const prev = formatSlot(cfg, new Date(prevStartUtc));
+  const w = visitorWhen(cfg, booking);
+  const when = w.primary.replace(" (your time)", "") + (w.secondary ? ` — ${w.secondary}` : "");
+  const prev = visitorWhen(cfg, { ...booking, slot_start_utc: prevStartUtc }).primary.replace(" (your time)", "");
   const ics = buildICS({
     uid: `${booking.id}@otakar.dev`,
     sequence: 1,
@@ -177,11 +239,50 @@ export function rescheduleOwnerMessage(cfg, booking, prevStartUtc) {
   return {
     to: cfg.ownerEmail,
     subject: `Rescheduled: ${booking.name} — ${when}`,
-    text: `Booking rescheduled.\n\nWas: ${prev}\nNow: ${when}\nName: ${booking.name}\nEmail: ${booking.email}`,
+    text: `Booking rescheduled.\n\nWas: ${prev}\nNow: ${when}${ownerTzNote(cfg, booking)}\nName: ${booking.name}\nEmail: ${booking.email}`,
     html: wrapHtml(
       `<h2 style="margin:0 0 12px">Booking rescheduled</h2>
 <p><strong>Was:</strong> ${esc(prev)}<br><strong>Now:</strong> ${esc(when)}<br>
 <strong>Name:</strong> ${esc(booking.name)}<br><strong>Email:</strong> ${esc(booking.email)}</p>`
+    ),
+  };
+}
+
+/** Pre-call reminder (queued by the cron ~reminderHours before the start). */
+export function reminderVisitorMessage(cfg, booking) {
+  const w = visitorWhen(cfg, booking);
+  const hours = cfg.reminderHours;
+  const lead = hours === 24 ? "tomorrow" : hours % 24 === 0 ? `in ${hours / 24} days` : `in ${hours} hours`;
+  return {
+    to: booking.email,
+    subject: `Reminder: our discovery call is ${lead} — OJA Solutions`,
+    text: [
+      `Hi ${booking.name},`,
+      ``,
+      `A quick reminder that our 30-minute discovery call is ${lead}:`,
+      whenBlockText(cfg, booking),
+      ``,
+      `Join link: ${cfg.meetingUrl}`,
+      booking.topic ? `You wanted to cover: ${booking.topic}` : ``,
+      ``,
+      `No prep needed — just bring the workflow that's bugging you.`,
+      `Need to move or cancel it? Use the link in your confirmation email, or reply to this message.`,
+      ``,
+      `See you then,`,
+      `Otakar — OJA Solutions`,
+    ]
+      .filter((l) => l !== null)
+      .join("\n"),
+    html: wrapHtml(
+      `<h2 style="margin:0 0 12px">Our call is ${esc(lead)}</h2>
+<p>Hi ${esc(booking.name)},</p>
+<p>A quick reminder that our 30-minute discovery call is ${esc(lead)}:</p>
+${whenBlockHtml(cfg, booking)}
+<p><a href="${esc(cfg.meetingUrl)}" style="color:#157F4B">Join link</a></p>
+${booking.topic ? `<p style="color:#586771">You wanted to cover: ${esc(booking.topic)}</p>` : ""}
+<p>No prep needed — just bring the workflow that's bugging you.</p>
+<p style="color:#586771">Need to move or cancel it? Use the link in your confirmation email, or reply to this message.</p>
+<p>See you then,<br>Otakar</p>`
     ),
   };
 }

@@ -33,6 +33,7 @@ BUFFER_MINUTES  = "15"
 MEETING_MINUTES = "30"
 NOTICE_HOURS    = "24"
 HORIZON_DAYS    = "45"
+REMINDER_HOURS  = "24"   # pre-call reminder email lead time; "0" disables
 RESEND_FROM     = "OJA Solutions <hello@otakar.dev>"
 OWNER_EMAIL     = "hello@otakar.dev"
 INQUIRY_EXPIRY_DAYS = "180"

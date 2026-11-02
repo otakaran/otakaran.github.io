@@ -10,11 +10,14 @@ Two independently-deployed parts:
 The site calls the API from the browser; the two share no build step. The API
 is **free-tier only** (Workers + D1 + Resend free limits; paid overages off).
 
-> **Status 2026-10-25:** the site is LIVE on otakar.dev from `master`. The 7
-> illustrative `data-draft="invented"` items shipped as-is (owner's call to
-> launch); remove or ground them any time: `grep -n 'data-draft' index.html`.
-> The API (`worker/`) is NOT deployed yet — the page runs on its email
-> fallbacks until §2.3–2.6 are done.
+> **Status 2026-11-01:** the site is LIVE on otakar.dev from `master` (scheduler
+> v2 shipped). The API (`worker/`) is **deployed to api.otakar.dev** with the
+> D1 schema at migration 0002 and `MGMT_TOKEN_SALT` set, but it answers **503
+> "not-configured"** — so the page still shows its email fallbacks — until the
+> three account-bound secrets exist (§2.3–2.5: Resend key, Turnstile, meeting
+> link). `curl https://api.otakar.dev/health` lists exactly what is missing.
+> Setting the secrets flips it live with no redeploy. The 7 illustrative
+> `data-draft="invented"` items shipped as-is (owner's call to launch).
 
 ---
 
@@ -46,6 +49,10 @@ headers live at Cloudflare, **not** GitHub. GitHub Pages reports
 provisioning one) — **never enable "Enforce HTTPS" on the GitHub Pages
 settings page**; it would redirect-loop and take the site down.
 
+Note (2026-11-01): `.dev` is on the browser HSTS preload list, so every
+browser already refuses plain HTTP for otakar.dev and its subdomains — the
+toggles below are belt-and-braces for non-browser clients, not a security gap.
+
 Checklist (as of 2026-10-25 none of these are on; plain `http://otakar.dev`,
 `utah.otakar.dev` and `jana.otakar.dev` all answer 200 without redirecting):
 
@@ -76,8 +83,8 @@ Resend account, Node 20+, and `cd worker && npm install`.
 `oja-booking` exists (id `18a16ae7-27f1-4313-9ec1-dd3cb09a479c`, region WNAM) and
 is already in `wrangler.toml`. Nothing to do unless you recreate it.
 
-### 2.2 Apply the schema — DONE 2026-10-25
-`0001_init.sql` is applied remotely. For future migrations:
+### 2.2 Apply the schema — DONE through 0002 (2026-11-01)
+Both migrations are applied remotely. For future migrations:
 ```bash
 npm run db:migrate:remote      # wrangler d1 migrations apply oja-booking --remote
 ```
@@ -99,15 +106,23 @@ npm run db:migrate:remote      # wrangler d1 migrations apply oja-booking --remo
 
 ### 2.5 Set secrets
 ```bash
-npx wrangler secret put RESEND_API_KEY      # from Resend
-npx wrangler secret put TURNSTILE_SECRET    # from Turnstile
-npx wrangler secret put MGMT_TOKEN_SALT     # a long random string (e.g. openssl rand -hex 32)
-npx wrangler secret put MEETING_URL         # your private video meeting join link
+npx wrangler secret put RESEND_API_KEY      # from Resend          ← still needed
+npx wrangler secret put TURNSTILE_SECRET    # from Turnstile       ← still needed (optional but recommended)
+npx wrangler secret put MEETING_URL         # your reusable video meeting join link  ← still needed
 ```
+`MGMT_TOKEN_SALT` was set on 2026-11-01 (random 32 bytes; a copy is in the
+macOS Keychain: `security find-generic-password -s oja-api -a MGMT_TOKEN_SALT -w`).
+**Do not change it** once bookings exist — every management link would break.
+
+The API refuses bookings/inquiries with **503 `not-configured`** until
+`RESEND_API_KEY` and `MEETING_URL` are set (`/health` → `ready:true` when done).
+Secrets take effect immediately; no redeploy needed. For local dev the same
+gate is bypassed by `ALLOW_UNCONFIGURED=true` in `.dev.vars` — never set it
+in production.
 Non-secret config (origins, hours, holidays, rate limits) lives in
 `wrangler.toml` `[vars]` — edit there.
 
-### 2.6 Deploy
+### 2.6 Deploy — DONE 2026-11-01 (redeploy after any code change)
 ```bash
 npm run deploy                  # wrangler deploy
 ```
@@ -121,6 +136,9 @@ expires old records.
 
 ## 3. Post-deploy verification
 ```bash
+# readiness — ready:true and missing:[] once §2.5 is complete
+curl -s https://api.otakar.dev/health | jq
+
 # availability (should list weekday Pacific slots)
 curl -s "https://api.otakar.dev/availability" | jq '.tz, (.slots|length)'
 
@@ -129,9 +147,11 @@ curl -s -X POST https://api.otakar.dev/bookings \
   -H 'Content-Type: application/json' -H 'Origin: https://otakar.dev' \
   -d '{"name":"Test","email":"you@yourmail.com","slot":"<an ISO start from above>"}' | jq
 ```
-Then check: confirmation email arrives with a calendar (`.ics`) attachment;
+Then check: confirmation email arrives with a calendar (`.ics`) attachment
+and, if you booked from outside Pacific, your local time on the first line;
 the owner notification arrives at `hello@otakar.dev`; the management link opens
-`https://otakar.dev/manage.html?token=…` and can reschedule/cancel.
+`https://otakar.dev/manage.html?token=…` and can reschedule/cancel (the cancel
+email carries a `METHOD:CANCEL` invite).
 
 Also run the booking + inquiry flows in a browser on `otakar.dev` and confirm
 the Turnstile widget renders.
@@ -159,7 +179,20 @@ arrive and re-`deploy`.
 **Change availability:** edit `BUSINESS_START/END`, `SLOT_MINUTES`,
 `BUFFER_MINUTES`, `NOTICE_HOURS`, `HORIZON_DAYS` in `[vars]` and redeploy.
 
+**Reminders:** the cron queues one "see you tomorrow" email per booking once
+its start is within `REMINDER_HOURS` (default 24). Set it to `0` to turn
+reminders off. Check `SELECT name, slot_start_utc, reminder_sent_at FROM
+bookings` to see what has gone out.
+
 **Logs:** `npx wrangler tail`.
+
+**CI:** `.github/workflows/worker-tests.yml` runs `npm test` for `worker/` on
+every push/PR touching it. Deploys stay manual from this machine (wrangler
+OAuth login); to automate them, create a Cloudflare API token (Workers Scripts
+Edit, D1 Edit, Workers Routes Edit, Zone Read on otakar.dev), store it with
+`gh secret set CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID` in this repo,
+and add a `cloudflare/wrangler-action` job — the utah-snow repo's `ci.yml` is
+a working template.
 
 **Swapping schedulers later:** the front end talks to a provider interface
 (`assets/js/scheduler/providers/`). A Cal.com/Calendly move is a new provider

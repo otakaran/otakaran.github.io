@@ -107,7 +107,7 @@
       if (submit) submit.disabled = false;
       var user = (window.OJA && window.OJA.emailUser) || "hello";
       var domain = (window.OJA && window.OJA.emailDomain) || "otakar.dev";
-      setStatus("err", (msg ? msg + " " : "Couldn't send just now. ") + "You can also email " + user + "@" + domain + " directly.");
+      setStatus("err", (msg ? msg + " " : "Couldn't send just now. ") + "You can email " + user + "@" + domain + " directly instead.");
       // Make the bot-safe mailto immediately usable as a manual fallback.
       form.setAttribute("action", "mailto:" + user + "@" + domain);
     }

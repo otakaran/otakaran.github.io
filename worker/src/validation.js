@@ -24,6 +24,18 @@ function isEmail(v) {
   return typeof v === "string" && v.length <= LIMITS.email && EMAIL_RE.test(v.trim());
 }
 
+/** A usable IANA time zone name (validated by Intl; rejects garbage). */
+export function isTimeZone(v) {
+  if (typeof v !== "string" || !v || v.length > 64 || !/^[A-Za-z0-9_+\-\/]+$/.test(v)) return false;
+  try {
+    new Intl.DateTimeFormat("en-US", { timeZone: v });
+    return true;
+  } catch {
+    return false;
+  }
+}
+const cleanTz = (v) => (typeof v === "string" && isTimeZone(v.trim()) ? v.trim() : "");
+
 /** ISO 8601 instant that round-trips (rejects garbage + non-UTC fuzz). */
 export function isIsoInstant(v) {
   if (typeof v !== "string" || v.length > 40) return false;
@@ -38,6 +50,7 @@ export function validateBooking(body = {}) {
     email: clampString(body.email, LIMITS.email),
     topic: clampString(body.topic, LIMITS.topic),
     slot: typeof body.slot === "string" ? body.slot.trim() : "",
+    tz: cleanTz(body.tz), // optional; invalid values are dropped, never rejected
   };
   if (!clean.name) errors.name = "Please enter your name.";
   if (!isEmail(clean.email)) errors.email = "Please enter a valid email address.";
@@ -47,7 +60,7 @@ export function validateBooking(body = {}) {
 
 export function validateReschedule(body = {}) {
   const errors = {};
-  const clean = { slot: typeof body.slot === "string" ? body.slot.trim() : "" };
+  const clean = { slot: typeof body.slot === "string" ? body.slot.trim() : "", tz: cleanTz(body.tz) };
   if (!isIsoInstant(clean.slot)) errors.slot = "Please choose a new time slot.";
   return { ok: Object.keys(errors).length === 0, errors, clean };
 }

@@ -71,7 +71,7 @@ async function hasBufferConflict(db, cfg, start, end, excludeId = null) {
 export async function createBooking(db, cfg, body, now = new Date()) {
   const v = validateBooking(body);
   if (!v.ok) return { status: 400, body: { error: "validation", fields: v.errors } };
-  const { name, email: visitorEmail, topic, slot } = v.clean;
+  const { name, email: visitorEmail, topic, slot, tz } = v.clean;
 
   const start = new Date(slot);
   if (!isBookableSlot(cfg, start, now)) {
@@ -94,10 +94,10 @@ export async function createBooking(db, cfg, body, now = new Date()) {
     await db
       .prepare(
         `INSERT INTO bookings
-           (id, slot_start_utc, slot_end_utc, name, email, topic, status, mgmt_token_hash, created_at, updated_at)
-         VALUES (?, ?, ?, ?, ?, ?, 'booked', ?, ?, ?)`
+           (id, slot_start_utc, slot_end_utc, name, email, topic, tz, status, mgmt_token_hash, created_at, updated_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, 'booked', ?, ?, ?)`
       )
-      .bind(id, startIso, endIso, name, visitorEmail, topic, tokenHash, nowIso, nowIso)
+      .bind(id, startIso, endIso, name, visitorEmail, topic, tz || null, tokenHash, nowIso, nowIso)
       .run();
   } catch (err) {
     if (isUniqueErr(err)) {
@@ -106,7 +106,7 @@ export async function createBooking(db, cfg, body, now = new Date()) {
     throw err;
   }
 
-  const booking = { id, slot_start_utc: startIso, slot_end_utc: endIso, name, email: visitorEmail, topic };
+  const booking = { id, slot_start_utc: startIso, slot_end_utc: endIso, name, email: visitorEmail, topic, tz };
   const manageUrl = `${cfg.siteOrigin}/manage.html?token=${encodeURIComponent(rawToken)}`;
   await email.enqueueEmail(db, email.bookingVisitorMessage(cfg, booking, manageUrl));
   await email.enqueueEmail(db, email.bookingOwnerMessage(cfg, booking));
@@ -115,7 +115,7 @@ export async function createBooking(db, cfg, body, now = new Date()) {
     status: 201,
     body: {
       ok: true,
-      booking: { start: startIso, end: endIso, name, email: visitorEmail },
+      booking: { start: startIso, end: endIso, name, email: visitorEmail, tz },
       manage_token: rawToken,
       manage_url: manageUrl,
       meeting_url: cfg.meetingUrl,
@@ -126,7 +126,7 @@ export async function createBooking(db, cfg, body, now = new Date()) {
 export async function getBooking(db, cfg, token) {
   const hash = await hashToken(token, cfg.mgmtTokenSalt);
   const row = await db
-    .prepare(`SELECT slot_start_utc, slot_end_utc, name, status FROM bookings WHERE mgmt_token_hash=?`)
+    .prepare(`SELECT slot_start_utc, slot_end_utc, name, status, tz FROM bookings WHERE mgmt_token_hash=?`)
     .bind(hash)
     .first();
   if (!row) return { status: 404, body: { error: "not-found", message: "We couldn't find that booking." } };
@@ -138,6 +138,7 @@ export async function getBooking(db, cfg, token) {
         end: row.slot_end_utc,
         name: row.name,
         status: row.status,
+        tz: row.tz || null,
         meeting_url: row.status === "booked" ? cfg.meetingUrl : null,
       },
     },
@@ -170,10 +171,12 @@ export async function rescheduleBooking(db, cfg, token, body, now = new Date()) 
   const prevStart = existing.slot_start_utc;
   const startIso = start.toISOString();
   const endIso = end.toISOString();
+  const tz = v.clean.tz || existing.tz || null;
   try {
+    // A moved call gets a fresh reminder for its new time (reminder_sent_at reset).
     await db
-      .prepare(`UPDATE bookings SET slot_start_utc=?, slot_end_utc=?, updated_at=? WHERE id=?`)
-      .bind(startIso, endIso, now.toISOString(), existing.id)
+      .prepare(`UPDATE bookings SET slot_start_utc=?, slot_end_utc=?, tz=?, reminder_sent_at=NULL, updated_at=? WHERE id=?`)
+      .bind(startIso, endIso, tz, now.toISOString(), existing.id)
       .run();
   } catch (err) {
     if (isUniqueErr(err)) {
@@ -182,12 +185,12 @@ export async function rescheduleBooking(db, cfg, token, body, now = new Date()) 
     throw err;
   }
 
-  const booking = { ...existing, slot_start_utc: startIso, slot_end_utc: endIso };
+  const booking = { ...existing, slot_start_utc: startIso, slot_end_utc: endIso, tz };
   const manageUrl = `${cfg.siteOrigin}/manage.html?token=${encodeURIComponent(token)}`;
   await email.enqueueEmail(db, email.rescheduleVisitorMessage(cfg, booking, prevStart, manageUrl));
   await email.enqueueEmail(db, email.rescheduleOwnerMessage(cfg, booking, prevStart));
 
-  return { status: 200, body: { ok: true, booking: { start: startIso, end: endIso } } };
+  return { status: 200, body: { ok: true, booking: { start: startIso, end: endIso, tz } } };
 }
 
 export async function cancelBooking(db, cfg, token, now = new Date()) {

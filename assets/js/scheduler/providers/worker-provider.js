@@ -6,11 +6,11 @@
 
    Interface (all async, throw SchedulerError on failure):
      getAvailability({from, to}) -> { tz, slots: [{start, end}] }
-     book({name, email, topic, slot, turnstile_token, company})
+     book({name, email, topic, slot, tz, turnstile_token, company})
                                  -> { ok, booking, manage_token, manage_url, meeting_url }
-     reschedule(token, slot)     -> { ok, booking }
+     reschedule(token, slot, {tz}) -> { ok, booking }
      cancel(token)               -> { ok }
-     getBooking(token)           -> { booking: {start, end, name, status, meeting_url} }
+     getBooking(token)           -> { booking: {start, end, name, status, tz, meeting_url} }
    ========================================================================== */
 (function () {
   "use strict";
@@ -42,8 +42,10 @@
     return this._post("/bookings", req);
   };
 
-  WorkerProvider.prototype.reschedule = function (token, slot) {
-    return this._post("/bookings/" + encodeURIComponent(token) + "/reschedule", { slot: slot });
+  WorkerProvider.prototype.reschedule = function (token, slot, extra) {
+    var body = { slot: slot };
+    if (extra && extra.tz) body.tz = extra.tz;
+    return this._post("/bookings/" + encodeURIComponent(token) + "/reschedule", body);
   };
 
   WorkerProvider.prototype.cancel = function (token) {

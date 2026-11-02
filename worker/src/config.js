@@ -29,6 +29,7 @@ export function getConfig(env = {}) {
     noticeHours: num(env.NOTICE_HOURS, 24),
     horizonDays: num(env.HORIZON_DAYS, 45),
     holidays,
+    reminderHours: num(env.REMINDER_HOURS, 24), // 0 disables the pre-call reminder
 
     // Origins / links
     allowedOrigin,
@@ -46,5 +47,28 @@ export function getConfig(env = {}) {
     mgmtTokenSalt: str(env.MGMT_TOKEN_SALT, "dev-insecure-salt-change-me"),
     rateMax: num(env.RATE_MAX, 8),
     rateWindowSeconds: num(env.RATE_WINDOW_SECONDS, 3600),
+
+    // Local dev / tests: accept requests even without the production secrets
+    // (emails stay queued). Never set this in production.
+    allowUnconfigured: /^(1|true|yes)$/i.test(str(env.ALLOW_UNCONFIGURED, "")),
   };
+}
+
+const MEETING_PLACEHOLDER = "https://example.com/meeting-link-not-set";
+
+/**
+ * Production readiness. The API refuses bookings/inquiries (503) until it can
+ * actually deliver email and hand out a real meeting link — otherwise visitors
+ * would get a "booked" screen and nothing would ever arrive.
+ *   { ready, missing: [...required secrets absent], warnings: [...optional] }
+ */
+export function readiness(cfg) {
+  const missing = [];
+  const warnings = [];
+  if (!cfg.resendApiKey) missing.push("RESEND_API_KEY");
+  if (!cfg.meetingUrl || cfg.meetingUrl === MEETING_PLACEHOLDER) missing.push("MEETING_URL");
+  if (!cfg.turnstileSecret) warnings.push("TURNSTILE_SECRET (bot challenge skipped)");
+  if (cfg.mgmtTokenSalt === "dev-insecure-salt-change-me") warnings.push("MGMT_TOKEN_SALT (dev default)");
+  const ready = cfg.allowUnconfigured || missing.length === 0;
+  return { ready, missing, warnings };
 }

@@ -11,7 +11,7 @@
 // honeypot, JSON parsing, email flush, error shaping) live here; the handler
 // modules stay pure-ish and return { status, body }.
 // ===========================================================================
-import { getConfig } from "./config.js";
+import { getConfig, readiness } from "./config.js";
 import { json, preflight, originAllowed } from "./http.js";
 import { rateLimit } from "./ratelimit.js";
 import { verifyTurnstile } from "./turnstile.js";
@@ -32,12 +32,25 @@ export default {
 
     if (method === "OPTIONS") return preflight(origin, cfg.allowedOrigin);
 
+    const state = readiness(cfg);
     if (url.pathname === "/" || url.pathname === "/health") {
-      return reply({ ok: true, service: "oja-api" });
+      // Names of absent config only — never values.
+      return reply({ ok: true, service: "oja-api", ready: state.ready, missing: state.missing, warnings: state.warnings });
     }
 
     if (!originAllowed(origin, cfg.allowedOrigin)) {
       return reply({ error: "forbidden-origin" }, 403);
+    }
+
+    // Not configured for email/meeting yet: the page falls back to its email
+    // path (scheduler fallback + mailto form) instead of accepting bookings
+    // that could never be confirmed.
+    if (!state.ready) {
+      return reply(
+        { error: "not-configured", message: "Online booking isn't open yet." },
+        503,
+        { "Retry-After": "3600" }
+      );
     }
 
     const ip =

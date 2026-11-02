@@ -47,7 +47,7 @@
     this.taken[req.slot] = true;
     var token = "mock-" + Math.random().toString(36).slice(2, 12);
     var end = new Date(new Date(req.slot).getTime() + 30 * 60000).toISOString();
-    this.booked[token] = { start: req.slot, end: end, name: req.name, status: "booked" };
+    this.booked[token] = { start: req.slot, end: end, name: req.name, status: "booked", tz: req.tz || "" };
     return delay({
       ok: true,
       booking: { start: req.slot, end: end, name: req.name, email: req.email },
@@ -57,7 +57,7 @@
     });
   };
 
-  MockProvider.prototype.reschedule = function (token, slot) {
+  MockProvider.prototype.reschedule = function (token, slot /*, extra */) {
     var b = this.booked[token];
     if (!b || b.status !== "booked") return reject("We couldn't find that booking.", 404);
     if (this.taken[slot]) return reject("That time was just taken — please pick another.", 409);
@@ -79,7 +79,7 @@
   MockProvider.prototype.getBooking = function (token) {
     var b = this.booked[token];
     if (!b) return reject("We couldn't find that booking.", 404);
-    return delay({ booking: { start: b.start, end: b.end, name: b.name, status: b.status, meeting_url: "https://example.com/mock-meeting" } });
+    return delay({ booking: { start: b.start, end: b.end, name: b.name, status: b.status, tz: b.tz, meeting_url: "https://example.com/mock-meeting" } });
   };
 
   // --- helpers ---

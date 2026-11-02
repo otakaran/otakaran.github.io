@@ -14,3 +14,7 @@ MEETING_URL=https://example.com/dev-meeting-link
 
 # Optional: open CORS for local curl/file testing.
 # ALLOWED_ORIGIN=*
+
+# Local dev only: serve availability + accept bookings even though the email/
+# meeting secrets above are blank (the API returns 503 otherwise). Never in prod.
+ALLOW_UNCONFIGURED=true

@@ -11,13 +11,13 @@ the developer reference.
 | Method | Path | Purpose |
 | --- | --- | --- |
 | GET  | `/availability?from&to` | open 30-min slots (weekday 10:00–15:00 PT, DST-aware) |
-| POST | `/bookings` | create a booking → confirmation + ICS email |
+| POST | `/bookings` | create a booking (`tz` optional) → confirmation + ICS email |
 | GET  | `/bookings/:token` | look up a booking (manage page) |
 | POST | `/bookings/:token/reschedule` | move a booking |
 | POST | `/bookings/:token/cancel` | cancel a booking |
 | POST | `/inquiries` | project inquiry → owner notify + auto-reply |
-| GET  | `/health` | liveness |
-| —    | `scheduled()` | cron: retry email outbox, expire records, sweep |
+| GET  | `/health` | liveness + readiness (`ready`, `missing[]`, `warnings[]`) |
+| —    | `scheduled()` | cron: queue pre-call reminders, retry email outbox, expire records, sweep |
 
 ## Booking rules (configurable in `wrangler.toml [vars]`)
 Weekdays only, **10:00 AM–3:00 PM Pacific** (DST via `Intl`), 30-min slots,
@@ -25,6 +25,20 @@ Weekdays only, **10:00 AM–3:00 PM Pacific** (DST via `Intl`), 30-min slots,
 (observed, 2026–2027) are excluded via the `HOLIDAYS` list. All times stored
 UTC. A partial unique index `(slot_start_utc) WHERE status='booked'` is the
 hard double-book guard → conflicting writes return **409**.
+
+Bookings may carry the visitor's IANA `tz` (validated with `Intl`, dropped if
+bogus). Visitor emails then lead with their local time and show Pacific as a
+second line; owner notices name the zone. The cron queues **one reminder**
+per booking once its start is within `REMINDER_HOURS` (default 24; `0`
+disables), at least an hour after it was created, and marks `reminder_sent_at`
+first so a retried run can't double-send. Rescheduling resets the reminder.
+Cancellations attach a `METHOD:CANCEL` invite so imported events disappear.
+
+## Readiness gate
+Every endpoint except `/health` answers **503 `not-configured`** until
+`RESEND_API_KEY` and a real `MEETING_URL` are set, so the site keeps its email
+fallbacks instead of accepting bookings it can't confirm. Local dev bypasses
+this with `ALLOW_UNCONFIGURED=true` in `.dev.vars` (never in production).
 
 ## Anti-abuse
 Turnstile (server-verified; skipped when no secret in dev), honeypot field,
@@ -40,15 +54,16 @@ src/
   time.js         Intl-based tz helpers (offset, wall-clock→UTC, parts)  [pure]
   availability.js slot grid, isBookableSlot, buffer overlap             [pure]
   booking.js      availability query + create/reschedule/cancel/lookup
+  reminders.js    reminder window + due rule                              [pure]
   inquiries.js    inquiry create
-  email.js        templates + Resend send + durable outbox
+  email.js        templates (local + Pacific times, reminder, cancel ICS) + Resend send + durable outbox
   ics.js          RFC-5545 VEVENT builder                                [pure]
   tokens.js       token gen + salted hashing
   validation.js   field validation + honeypot                           [pure]
   turnstile.js    Turnstile siteverify
   ratelimit.js    per-IP fixed-window (D1)
-  cron.js         outbox retry + expiry + sweep
-migrations/0001_init.sql
+  cron.js         reminders + outbox retry + expiry + sweep
+migrations/0001_init.sql, 0002_tz_reminders.sql
 test/             vitest unit tests for the pure core
 ```
 
@@ -56,7 +71,7 @@ test/             vitest unit tests for the pure core
 ```bash
 npm install
 cp .dev.vars.example .dev.vars        # fill in / leave blank for safe dev mode
-npm run db:migrate:local              # apply schema to local D1
+npm run db:migrate:local              # apply schema (both migrations) to local D1
 npm run dev                           # wrangler dev on http://127.0.0.1:8787
 ```
 In dev mode with blank secrets: emails stay queued in `email_outbox` (never
@@ -67,7 +82,7 @@ for localhost).
 
 ## Tests
 ```bash
-npm test           # vitest: DST/slot/holiday, tokens, validation, ICS (48 assertions)
+npm test           # vitest: DST/slot/holiday, tokens, validation, ICS, reminders, email templates (69 tests)
 ```
 The pure algorithmic core is unit-tested in Node. DB/HTTP behaviour
 (availability filtering, double-book 409, reschedule/cancel, inquiries,
