@@ -123,8 +123,17 @@ Cross-reference: design/spec in the plan and `HANDOFF.md`; deploy steps in
 
 ## Carried-over frontend/content items (not from this build)
 
-- **Launch gate — 7 invented `data-draft="invented"` artifacts** must be grounded
-  or removed before merging to `master` (`grep -rn 'data-draft' index.html`).
+- ~~**Launch gate — 7 invented `data-draft="invented"` artifacts**~~ Shipped
+  2026-10-25 on the owner's call; relabeled 2026-11-01 after an adversarial
+  client review: the section is "Example builds", each figure carries an
+  "Illustrative example" badge, and the markers are now `data-example`
+  (`grep -rn 'data-example' index.html` → 7). Replacing them with real client
+  case studies is still the strongest possible upgrade (owner content).
+- **Client-review follow-ups needing owner input (2026-11-01):** public price
+  ranges (the business plan keeps the site discovery-first), a LinkedIn URL,
+  whether to link the Upwork profile, employer consent for the three internal
+  screenshots, European-morning availability, the `commit-magic` fork on the
+  GitHub profile, and the Cloudflare "Always Use HTTPS"/HSTS toggles.
 - **CONTENT-01** proj-01 screenshot has internal/operator text (owner decision).
 - **MOTIF-01 / UI-02 / CONTENT-03** minor cosmetic nits — see
   `private/review-findings.md`.

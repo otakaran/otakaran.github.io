@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Privacy — OJA Solutions</title>
+  <meta name="description" content="What otakar.dev collects when you book a call or send a message, where it is processed, how long it is kept, and how to have it deleted.">
+  <link rel="canonical" href="https://otakar.dev/privacy.html">
+  <meta name="theme-color" content="#111619">
+  <meta name="color-scheme" content="light">
+  <link rel="icon" href="/favicon.ico" sizes="48x48">
+  <link rel="icon" href="/assets/brand/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/assets/css/tokens.css">
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <style>
+    .legal { margin-top: var(--nav-h); display: grid; gap: 1.1rem; }
+    .legal h1 { margin-top: 0.25rem; }
+    .legal h2 { font-size: var(--fs-400); margin-top: 1.25rem; }
+    .legal p, .legal li { color: var(--color-ink-secondary); }
+    .legal ul { padding-left: 1.2rem; display: grid; gap: 0.5rem; }
+    .legal a { color: var(--color-accent); }
+    .legal .meta { font-family: var(--font-mono); font-size: var(--fs-100); color: var(--color-ink-muted); }
+  </style>
+</head>
+<body id="top">
+  <header class="site-header" data-static-header>
+    <div class="site-header__inner">
+      <a class="brand" href="/" aria-label="OJA Solutions — home">
+        <svg class="brand__mark" viewBox="0 0 192 80" fill="none" aria-hidden="true" focusable="false">
+          <g stroke="currentColor" stroke-width="11" stroke-linecap="square" stroke-linejoin="round">
+            <rect x="6" y="10" width="52" height="60" rx="17"/>
+            <path d="M118 10 V48 a22 22 0 0 1 -44 0"/>
+            <path d="M134 70 L160 10 L186 70 M143 50 H177"/>
+          </g>
+        </svg>
+        <span class="brand__name">Solutions</span>
+      </a>
+      <nav class="nav" aria-label="Primary">
+        <a class="btn nav__cta" href="/#book">Book a call</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" tabindex="-1">
+    <section class="section">
+      <div class="container container--text">
+        <div class="panel legal">
+          <p class="section__index eyebrow">Privacy</p>
+          <h1 class="section__title">How I handle your details</h1>
+          <p class="meta">OJA Solutions LLC · Beaverton, Oregon · last updated 2026-11-01</p>
+          <p>This site is a one-person consultancy's front door. It has two forms — booking a discovery call and sending a message — and this page explains exactly what they do with what you type. There are no cookies, no analytics, no ad or tracking scripts.</p>
+
+          <h2>What is collected, and why</h2>
+          <ul>
+            <li><strong>Booking a call:</strong> your name, email address, the time you picked, your time zone, and an optional note about what you'd like to cover. Used to confirm the call, send the calendar invite and a reminder the day before, and let you reschedule or cancel through your private link.</li>
+            <li><strong>Sending a message:</strong> your name, email address, your message, and the optional project type, timeline, and budget range. Used only to read and reply to your inquiry.</li>
+            <li><strong>Technical:</strong> your IP address is held for about an hour to limit automated abuse of the forms, then discarded. If the bot check is switched on, Cloudflare Turnstile runs in your browser and issues a one-time token; see <a href="https://www.cloudflare.com/privacypolicy/" rel="noopener" target="_blank">Cloudflare's privacy policy</a>.</li>
+          </ul>
+
+          <h2>Where it goes</h2>
+          <ul>
+            <li>The page is served by GitHub Pages through Cloudflare. The forms talk to a small application I run on <strong>Cloudflare Workers</strong> with its database (Cloudflare D1) in the western United States.</li>
+            <li>Confirmation, reminder, and reply emails are sent through <strong>Resend</strong>, an email delivery service. Owner notifications go to my inbox at hello@otakar.dev.</li>
+            <li>Nothing you enter here is sold, shared with advertisers, or used to train any model.</li>
+          </ul>
+
+          <h2>How long it is kept</h2>
+          <ul>
+            <li>Messages are kept for 180 days, then closed.</li>
+            <li>Booking records are kept so your reschedule/cancel link keeps working and so I have a record of who I spoke with.</li>
+            <li>Sent email records are cleared from the delivery queue after 30 days.</li>
+          </ul>
+
+          <h2>Your choices</h2>
+          <p>Email <a href="#" data-eml-user="hello" data-eml-domain="otakar.dev" data-eml-subject="Privacy request">hello [at] otakar.dev</a> to see what I hold about you or to have it deleted; I'll do it within a few business days. You can cancel a booked call at any time through the link in your confirmation email.</p>
+
+          <p class="meta">If you're in the EU or UK, the controller is OJA Solutions LLC, and the legal basis for the above is your request to be contacted (performance of a contract or pre-contract steps). Processing happens in the United States.</p>
+          <div class="manage__actions">
+            <a class="btn btn--primary" href="/#book">Book a call</a>
+            <a class="btn btn--ghost" href="/">Back to the site</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer surface-dark">
+    <div class="container">
+      <div class="footer__fine">
+        <span>© <span data-year>2026</span> OJA Solutions LLC · Beaverton, Oregon</span>
+        <span><a href="/">otakar.dev</a></span>
+      </div>
+    </div>
+  </footer>
+  <script src="/assets/js/main.js" defer></script>
+</body>
+</html>

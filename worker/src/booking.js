@@ -115,7 +115,7 @@ export async function createBooking(db, cfg, body, now = new Date()) {
     status: 201,
     body: {
       ok: true,
-      booking: { start: startIso, end: endIso, name, email: visitorEmail, tz },
+      booking: { id, start: startIso, end: endIso, name, email: visitorEmail, tz },
       manage_token: rawToken,
       manage_url: manageUrl,
       meeting_url: cfg.meetingUrl,
@@ -126,7 +126,7 @@ export async function createBooking(db, cfg, body, now = new Date()) {
 export async function getBooking(db, cfg, token) {
   const hash = await hashToken(token, cfg.mgmtTokenSalt);
   const row = await db
-    .prepare(`SELECT slot_start_utc, slot_end_utc, name, status, tz FROM bookings WHERE mgmt_token_hash=?`)
+    .prepare(`SELECT id, slot_start_utc, slot_end_utc, name, status, tz FROM bookings WHERE mgmt_token_hash=?`)
     .bind(hash)
     .first();
   if (!row) return { status: 404, body: { error: "not-found", message: "We couldn't find that booking." } };
@@ -134,6 +134,7 @@ export async function getBooking(db, cfg, token) {
     status: 200,
     body: {
       booking: {
+        id: row.id,
         start: row.slot_start_utc,
         end: row.slot_end_utc,
         name: row.name,
@@ -190,7 +191,7 @@ export async function rescheduleBooking(db, cfg, token, body, now = new Date()) 
   await email.enqueueEmail(db, email.rescheduleVisitorMessage(cfg, booking, prevStart, manageUrl));
   await email.enqueueEmail(db, email.rescheduleOwnerMessage(cfg, booking, prevStart));
 
-  return { status: 200, body: { ok: true, booking: { start: startIso, end: endIso, tz } } };
+  return { status: 200, body: { ok: true, booking: { id: existing.id, start: startIso, end: endIso, tz } } };
 }
 
 export async function cancelBooking(db, cfg, token, now = new Date()) {

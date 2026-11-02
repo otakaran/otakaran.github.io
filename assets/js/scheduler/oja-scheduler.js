@@ -29,6 +29,7 @@
     "Europe/London", "Europe/Prague", "UTC",
   ];
   var MEETING_MINUTES = 30;
+  var TOPIC_MAX = 1000; // mirrors worker/src/validation.js LIMITS.topic
 
   // --- config resolution -------------------------------------------------
   function resolveApiBase(attr) {
@@ -44,6 +45,8 @@
   }
 
   function makeProvider(cfg) {
+    // The mock adapter isn't shipped with the page; include
+    // providers/mock-provider.js yourself when demoing with data-provider="mock".
     if (cfg.provider === "mock" && NS.MockProvider) return new NS.MockProvider(cfg);
     return new NS.WorkerProvider(cfg);
   }
@@ -142,9 +145,15 @@
   }
   function tzAbbr(tz, d) {
     try {
-      var parts = fmt(tz, { timeZoneName: "short", hour: "numeric" }).formatToParts(d || new Date());
-      var p = parts.filter(function (x) { return x.type === "timeZoneName"; })[0];
-      return p ? p.value : tz;
+      var when = d || new Date();
+      var pick = function (parts) { var p = parts.filter(function (x) { return x.type === "timeZoneName"; })[0]; return p ? p.value : ""; };
+      var abbr = pick(fmt(tz, { timeZoneName: "short", hour: "numeric" }).formatToParts(when));
+      // en-US only names North American zones; "GMT+1" → try en-GB for CET/BST/etc.
+      if (/^(GMT|UTC)[+-]/.test(abbr)) {
+        var gb = pick(new Intl.DateTimeFormat("en-GB", { timeZone: tz, timeZoneName: "short", hour: "numeric" }).formatToParts(when));
+        if (gb && !/^(GMT|UTC)[+-]/.test(gb)) abbr = gb;
+      }
+      return abbr || tz;
     } catch (e) { return tz; }
   }
   function validTz(tz) {
@@ -195,11 +204,14 @@
   // --- add-to-calendar helpers ------------------------------------------
   function icsStamp(d) { return d.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, ""); }
   function icsEscape(t) { return String(t).replace(/\\/g, "\\\\").replace(/;/g, "\\;").replace(/,/g, "\\,").replace(/\r?\n/g, "\\n"); }
-  function calendarLinks(booking, meetingUrl, manageUrl) {
+  function calendarLinks(booking, meetingUrl) {
     var s = new Date(booking.start), e = new Date(booking.end || s.getTime() + MEETING_MINUTES * 60000);
     var title = "Discovery call — OJA Solutions";
+    // The manage link stays in the email, not in the event: calendars get shared.
     var details = "30-minute discovery call with Otakar Andrysek (OJA Solutions)." +
-      (meetingUrl ? "\nJoin: " + meetingUrl : "") + (manageUrl ? "\nManage: " + manageUrl : "");
+      (meetingUrl ? "\nJoin: " + meetingUrl : "") + "\nTo reschedule or cancel, use the link in your confirmation email.";
+    // Same UID as the emailed invite so accepting both yields one event.
+    var uid = booking.id ? booking.id + "@otakar.dev" : icsStamp(s) + "-discovery@otakar.dev";
     var google = "https://calendar.google.com/calendar/render?action=TEMPLATE" +
       "&text=" + encodeURIComponent(title) +
       "&dates=" + icsStamp(s) + "/" + icsStamp(e) +
@@ -208,7 +220,7 @@
     var ics = [
       "BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//OJA Solutions//Booking//EN", "CALSCALE:GREGORIAN", "METHOD:PUBLISH",
       "BEGIN:VEVENT",
-      "UID:" + icsStamp(s) + "-discovery@otakar.dev",
+      "UID:" + uid,
       "DTSTAMP:" + icsStamp(new Date()),
       "DTSTART:" + icsStamp(s),
       "DTEND:" + icsStamp(e),
@@ -272,6 +284,19 @@
 
   OjaScheduler.prototype.disconnectedCallback = function () {
     this._mounted = false;
+  };
+
+  // The hosting panel's heading/subline follow the scheduler's state, so the
+  // visitor never reads "Pick a time" over an email button or a confirmation.
+  OjaScheduler.prototype._setPanelCopy = function (title, sub) {
+    if (this.cfg.mode === "reschedule") return;
+    var panel = this.closest(".panel");
+    var h = panel && panel.querySelector(".panel__head h3");
+    var p = panel && panel.querySelector(".panel__head .panel__sub");
+    if (!h) return;
+    if (!this._panelCopy) this._panelCopy = { title: h.textContent, sub: p ? p.textContent : "" };
+    h.textContent = title || this._panelCopy.title;
+    if (p) p.textContent = sub || this._panelCopy.sub;
   };
 
   OjaScheduler.prototype._siblingFallback = function () {
@@ -367,10 +392,20 @@
     var s = this.state;
     if (s.phase === "loading") { this._clear(); this.appendChild(this._loading()); return; }
     if (s.phase === "fatal") { this._clear(); this._renderFatal(); return; }
-    if (s.phase === "empty") { this._clear(); this.appendChild(this._empty()); return; }
-    if (s.phase === "done") { this._clear(); this.appendChild(this._done()); return; }
+    if (s.phase === "empty") { this._clear(); this._setPanelCopy("Book a call by email"); this.appendChild(this._empty()); return; }
+    if (s.phase === "done") {
+      this._clear();
+      var moved = s.result && s.result.rescheduled;
+      this._setPanelCopy(moved ? "Your call was moved" : "You're booked", "The details are on their way to your inbox.");
+      var dw = el("div", { class: "sched" });
+      dw.appendChild(this._stepper(3));
+      dw.appendChild(this._done());
+      this.appendChild(dw);
+      return;
+    }
 
     if (s.phase === "pick") {
+      this._setPanelCopy();
       this._clear();
       var wrap = el("div", { class: "sched" });
       wrap.appendChild(this._stepper(1));
@@ -411,6 +446,7 @@
     // Live availability couldn't load. If the page ships the static email
     // fallback, just restore it — it already explains the email path; no need
     // to surface a raw network error. Otherwise (e.g. manage page) render our own.
+    this._setPanelCopy("Book a call by email", "Online booking isn't open yet — send a couple of times that work and I'll reply with the invite.");
     if (this.fallback) { this.fallback.hidden = false; return; }
     this.appendChild(
       el("div", { class: "sched__state" }, [
@@ -468,7 +504,7 @@
     ]);
     box.appendChild(foot);
 
-    if (s.error) box.appendChild(this._statusLine());
+    if (s.error) box.insertBefore(this._statusLine(), box.firstChild);
     return box;
   };
 
@@ -620,13 +656,12 @@
       el("strong", { text: p ? shortDate(p.y, p.m, p.d) : "Pick a day" }),
       el("span", { class: "sched__slots-count", text: list.length ? list.length + (list.length === 1 ? " time" : " times") : "" }),
     ]));
-    var grid = el("div", { class: "sched__times", role: "list", "aria-label": "Available times" });
+    var grid = el("div", { class: "sched__times", role: "group", "aria-label": "Available times" });
     list.forEach(function (slot) {
       var d = new Date(slot.start);
       var btn = el("button", {
         type: "button",
         class: "sched__time" + (s.selectedSlot === slot.start ? " is-active" : ""),
-        role: "listitem",
         "aria-pressed": s.selectedSlot === slot.start ? "true" : "false",
         "aria-label": fmtTime(s.tz, d) + " " + tzAbbr(s.tz, d),
         text: fmtTime(s.tz, d),
@@ -687,13 +722,13 @@
     var s = this.state;
     var box = el("div", { class: "sched__detail" });
     box.appendChild(this._summary());
+    box.appendChild(this._statusLine());
 
     if (this.cfg.mode === "reschedule") {
       var rbtn = el("button", { type: "button", class: "btn btn--primary btn--block", text: "Confirm new time" });
       rbtn.addEventListener("click", function () { self._submitReschedule(); });
       box.appendChild(rbtn);
       box.appendChild(el("p", { class: "form__note", text: "You'll get an updated calendar invite by email." }));
-      box.appendChild(this._statusLine());
       box._submit = rbtn;
       return box;
     }
@@ -702,19 +737,25 @@
     var form = el("form", { class: "form sched__form", novalidate: "novalidate" });
     var nameIn = el("input", { type: "text", name: "name", required: "required", autocomplete: "name", maxlength: "100", value: s.form.name });
     var emailIn = el("input", { type: "email", name: "email", required: "required", autocomplete: "email", inputmode: "email", maxlength: "160", value: s.form.email });
-    var topicIn = el("textarea", { name: "topic", maxlength: "200", rows: "3", placeholder: "A sentence or two is plenty." });
+    var topicIn = el("textarea", { name: "topic", maxlength: String(TOPIC_MAX), rows: "3", placeholder: "A sentence or two is plenty — more is welcome." });
     topicIn.value = s.form.topic;
+    var count = el("span", { class: "field__count", "aria-live": "polite" });
+    var syncCount = function () { count.textContent = topicIn.value.length >= TOPIC_MAX * 0.8 ? topicIn.value.length + " / " + TOPIC_MAX : ""; };
+    syncCount();
     [nameIn, emailIn, topicIn].forEach(function (inp) {
       inp.addEventListener("input", function () {
         s.form[inp.name] = inp.value;
         self._clearFieldError(inp);
+        if (inp === topicIn) syncCount();
       });
     });
     form.appendChild(el("div", { class: "form__row form__row--2" }, [
       field("Name", nameIn, true),
       field("Email", emailIn, true),
     ]));
-    form.appendChild(field("What would you like to cover?", topicIn, false, "Optional"));
+    var topicField = field("What would you like to cover?", topicIn, false, "Optional");
+    topicField.appendChild(count);
+    form.appendChild(topicField);
 
     // Honeypot
     form.appendChild(el("div", { class: "hp-field", "aria-hidden": "true" }, [
@@ -733,8 +774,7 @@
       el("span", { class: "btn__arrow", "aria-hidden": "true", text: "→" }),
     ]);
     form.appendChild(submit);
-    form.appendChild(el("p", { class: "form__note sched__fine", text: "You'll get a confirmation email with a calendar invite and the video link. No prep needed." }));
-    form.appendChild(this._statusLine());
+    form.appendChild(el("p", { class: "form__note sched__fine", text: "You'll get a confirmation email with a calendar invite and the video link. I'll read your note beforehand — no prep needed." }));
     form.addEventListener("submit", function (e) { e.preventDefault(); self._submitBooking(form); });
     box.appendChild(form);
     box._submit = submit;
@@ -844,6 +884,7 @@
         var h = self.querySelector(".sched__done-title");
         if (h) h.focus({ preventScroll: true });
         self._announce("Your call was moved.");
+        try { self.dispatchEvent(new CustomEvent("oja:rescheduled", { bubbles: true, detail: { booking: res.booking } })); } catch (e) {}
       })
       .catch(function (err) { self._failBack(err); });
   };
@@ -903,11 +944,14 @@
 
     var actions = el("div", { class: "sched__done-actions" });
     if (b.start) {
-      var links = calendarLinks(b, s.result && s.result.meeting_url, s.result && s.result.manage_url);
+      var links = calendarLinks(b, s.result && s.result.meeting_url);
       actions.appendChild(el("a", { class: "btn btn--ghost", href: links.google, target: "_blank", rel: "noopener", text: "Add to Google Calendar" }));
       actions.appendChild(el("a", { class: "btn btn--ghost", href: links.ics, download: "discovery-call.ics", text: "Download .ics" }));
     }
-    if (actions.childNodes.length) box.appendChild(actions);
+    if (actions.childNodes.length) {
+      box.appendChild(actions);
+      box.appendChild(el("p", { class: "form__note", text: "The emailed invite is the same event — these are here in case it's slow to arrive." }));
+    }
 
     var links2 = el("p", { class: "sched__done-links" });
     if (s.result && s.result.meeting_url) {

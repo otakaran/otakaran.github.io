@@ -30,6 +30,19 @@
     var status = form.querySelector(".form-status");
     var submit = form.querySelector('button[type="submit"]');
     var siteKey = (window.OJA && window.OJA.turnstileSiteKey) || form.getAttribute("data-turnstile-key") || "";
+    var mailMode = false; // true while the API reports it can't take messages yet
+
+    // Say so before the visitor types: if the API isn't open, the message will
+    // go to their email app instead of silently failing after "Send".
+    fetch(resolveApiBase() + "/health", { headers: { Accept: "application/json" }, credentials: "omit" })
+      .then(function (r) { return r.json(); })
+      .then(function (h) {
+        if (h && h.ready === false) {
+          mailMode = true;
+          setStatus("", "Messages open in your email app for now — write here and hit send.");
+        }
+      })
+      .catch(function () {});
 
     // Optional Turnstile widget, injected before the actions when a key is set.
     if (siteKey && !form.querySelector(".cf-turnstile")) {
@@ -57,6 +70,16 @@
 
     form.addEventListener("submit", function (e) {
       e.preventDefault();
+      if (mailMode) {
+        var m = {
+          name: (form.name && form.name.value || "").trim(), email: (form.email && form.email.value || "").trim(),
+          project_type: (form.project_type && form.project_type.value) || "", timeline: (form.timeline && form.timeline.value) || "",
+          budget: (form.budget && form.budget.value) || "", message: (form.message && form.message.value || "").trim(),
+        };
+        if (!m.name || !m.email || !m.message) { setStatus("err", "Please fill in your name, email, and a short message."); return; }
+        failToEmail(503, m);
+        return;
+      }
 
       var name = (form.name && form.name.value || "").trim();
       var email = (form.email && form.email.value || "").trim();
@@ -71,6 +94,7 @@
         email: email,
         project_type: (form.project_type && form.project_type.value) || "",
         timeline: (form.timeline && form.timeline.value) || "",
+        budget: (form.budget && form.budget.value) || "",
         message: message,
         company: (form.company && form.company.value) || "", // honeypot
       };
@@ -122,6 +146,7 @@
       var lines = ["Hi Otakar,", "", data.message, "", "— " + data.name + " · " + data.email];
       if (data.project_type) lines.push("Project type: " + data.project_type);
       if (data.timeline) lines.push("Timeline: " + data.timeline);
+      if (data.budget) lines.push("Budget: " + data.budget);
       var href = "mailto:" + addr + "?subject=" + encodeURIComponent(subject) +
         "&body=" + encodeURIComponent(lines.join("\n").slice(0, 1800));
       form.setAttribute("action", "mailto:" + addr);

@@ -83,11 +83,16 @@
     });
   }
 
-  function renderActive(root, provider, token, b) {
+  function renderActive(root, provider, token, b, opts) {
+    opts = opts || {};
     var displayTz = (U && U.detectTz()) || API_TZ;
     clear(root);
     root.appendChild(el("p", { class: "section__index eyebrow", text: "Manage your booking" }));
     root.appendChild(el("h1", { class: "section__title manage__title", text: b.name ? "Hi " + b.name.split(" ")[0] + ", here's your call" : "Your discovery call" }));
+    if (opts.moved) {
+      var ok = el("p", { class: "form-status", role: "status", "data-state": "ok", text: "Your call was moved. An updated invite is on its way to your inbox." });
+      root.appendChild(ok);
+    }
     root.appendChild(summaryCard(b, displayTz));
 
     var links = el("p", { class: "manage__links" });
@@ -95,7 +100,7 @@
       links.appendChild(el("a", { href: b.meeting_url, target: "_blank", rel: "noopener", text: "Open the meeting link" }));
     }
     if (U && b.start) {
-      var cal = U.calendarLinks(b, b.meeting_url, location.href);
+      var cal = U.calendarLinks(b, b.meeting_url);
       if (links.childNodes.length) links.appendChild(el("span", { class: "sched__sep", "aria-hidden": "true", text: " · " }));
       links.appendChild(el("a", { href: cal.google, target: "_blank", rel: "noopener", text: "Add to Google Calendar" }));
       links.appendChild(el("span", { class: "sched__sep", "aria-hidden": "true", text: " · " }));
@@ -112,6 +117,15 @@
 
     var slot = el("div", { class: "manage__slot" });
     root.appendChild(slot);
+    // After a reschedule the whole page re-renders from the new booking, so the
+    // summary, calendar links and actions never show the old time.
+    slot.addEventListener("oja:rescheduled", function (e) {
+      var nb = (e.detail && e.detail.booking) || {};
+      var next = { id: b.id, name: b.name, status: b.status, meeting_url: b.meeting_url, start: nb.start || b.start, end: nb.end || b.end, tz: nb.tz || b.tz };
+      renderActive(root, provider, token, next, { moved: true });
+      var h = root.querySelector(".manage__title");
+      if (h) { h.setAttribute("tabindex", "-1"); h.focus({ preventScroll: true }); }
+    });
     var status = el("p", { class: "form-status", role: "alert" });
     status.hidden = true;
     root.appendChild(status);

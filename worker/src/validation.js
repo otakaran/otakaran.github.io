@@ -9,7 +9,7 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const LIMITS = {
   name: 100,
   email: 160,
-  topic: 200,
+  topic: 1000,
   message: 2000,
   project_type: 80,
   timeline: 80,

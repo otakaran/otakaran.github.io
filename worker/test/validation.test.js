@@ -9,6 +9,11 @@ import {
 
 describe("validateBooking", () => {
   const good = { name: "Ada", email: "ada@example.com", slot: "2026-06-24T17:00:00.000Z", topic: "AI" };
+  it("keeps a long topic up to 1000 characters", () => {
+    const v = validateBooking({ ...good, topic: "x".repeat(1200) });
+    expect(v.ok).toBe(true);
+    expect(v.clean.topic.length).toBe(1000);
+  });
 
   it("accepts a complete payload", () => {
     expect(validateBooking(good).ok).toBe(true);

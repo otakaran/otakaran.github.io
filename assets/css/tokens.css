@@ -33,7 +33,8 @@
   --green-400: #2BC079; /* on-dark accents */
 
   /* Signal orange — primary CTA / alert */
-  --orange-600: #D8540F; /* hover / orange-as-text on paper */
+  --orange-600: #D8540F; /* hover fill (dark ink on it passes AA) */
+  --orange-700: #B4440A; /* orange-as-text on paper: 5.07:1 (AA) */
   --orange-500: #F2641B; /* primary CTA fill */
   --orange-400: #FF7E3E; /* on-dark accents / glow */
 
@@ -45,7 +46,7 @@
 
   --color-ink:           var(--graphite-900); /* primary text */
   --color-ink-secondary: var(--steel-600);    /* supporting text */
-  --color-ink-muted:     var(--steel-500);    /* captions, meta */
+  --color-ink-muted:     var(--steel-600);    /* captions, meta — steel-500 fell short of AA on paper */
   --color-ink-inverse:   var(--paper);        /* text on dark surfaces */
 
   --color-border:        var(--steel-200);    /* structural lines */

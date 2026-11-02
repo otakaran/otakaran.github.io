@@ -113,7 +113,8 @@ export function bookingVisitorMessage(cfg, booking, manageUrl) {
     start: new Date(booking.slot_start_utc),
     end: new Date(booking.slot_end_utc),
     summary: "Discovery call — OJA Solutions",
-    description: `30-minute discovery call with Otakar Andrysek.\nJoin: ${cfg.meetingUrl}\nManage: ${manageUrl}`,
+    // The manage link stays in the email body, not in the event: calendars get shared.
+    description: `30-minute discovery call with Otakar Andrysek.\nJoin: ${cfg.meetingUrl}\nTo reschedule or cancel, use the link in your confirmation email.`,
     location: cfg.meetingUrl,
     organizerEmail: cfg.ownerEmail,
     organizerName: "Otakar Andrysek",
@@ -248,7 +249,7 @@ export function rescheduleVisitorMessage(cfg, booking, prevStartUtc, manageUrl) 
     start: new Date(booking.slot_start_utc),
     end: new Date(booking.slot_end_utc),
     summary: "Discovery call — OJA Solutions",
-    description: `Rescheduled 30-minute discovery call.\nJoin: ${cfg.meetingUrl}\nManage: ${manageUrl}`,
+    description: `Rescheduled 30-minute discovery call.\nJoin: ${cfg.meetingUrl}\nTo reschedule or cancel, use the link in your confirmation email.`,
     location: cfg.meetingUrl,
     organizerEmail: cfg.ownerEmail,
     organizerName: "Otakar Andrysek",

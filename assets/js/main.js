@@ -52,7 +52,7 @@
       var domain = el.getAttribute("data-eml-domain");
       if (!user || !domain) return;
       var addr = user + "@" + domain;
-      if (el.tagName === "FORM") { el.setAttribute("action", "mailto:" + addr); return; }
+      if (el.tagName === "FORM") return; // contact.js sets a mailto: action only when the API can't take the message
       var subject = el.getAttribute("data-eml-subject");
       var body = el.getAttribute("data-eml-body");
       var qs = [];
@@ -68,9 +68,16 @@
   function initHeaderScroll() {
     var header = document.querySelector(".site-header");
     var hero = document.querySelector(".hero");
-    if (!header) return;
+    if (!header || header.hasAttribute("data-static-header")) return; // secondary pages keep the solid bar
     var point = 120;
-    var measure = function () { point = hero ? Math.max(80, hero.offsetHeight - header.offsetHeight) : 120; };
+    var meta = hero && hero.querySelector(".hero__meta");
+    var measure = function () {
+      if (!hero) { point = 120; return; }
+      // Solid as soon as the chip row would slide under the bar — before, the
+      // transparent header would overprint the chips.
+      var edge = meta ? meta.getBoundingClientRect().top + window.scrollY : hero.offsetHeight;
+      point = Math.max(80, edge - header.offsetHeight);
+    };
     measure();
     window.addEventListener("resize", measure, { passive: true });
 

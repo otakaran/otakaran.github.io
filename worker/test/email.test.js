@@ -49,6 +49,8 @@ describe("templates", () => {
     expect(m.text).toContain("(Pacific)");
     expect(m.text).toContain("reminder the day before");
     expect(m.icsContent).toContain("METHOD:REQUEST");
+    expect(m.text).toContain("token=t");          // manage link in the email body…
+    expect(m.icsContent).not.toContain("token=t"); // …but never inside the calendar event
   });
   it("owner notice names the visitor's zone", () => {
     const m = bookingOwnerMessage(cfg, booking);

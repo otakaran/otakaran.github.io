@@ -17,7 +17,9 @@ is **free-tier only** (Workers + D1 + Resend free limits; paid overages off).
 > three account-bound secrets exist (§2.3–2.5: Resend key, Turnstile, meeting
 > link). `curl https://api.otakar.dev/health` lists exactly what is missing.
 > Setting the secrets flips it live with no redeploy. The 7 illustrative
-> `data-draft="invented"` items shipped as-is (owner's call to launch).
+> example builds are marked `data-example` and labeled "Illustrative example"
+> on the page (2026-11-01 client review: the old `data-draft="invented"`
+> markers and comments were visible in the public source).
 
 ---
 
@@ -26,7 +28,7 @@ is **free-tier only** (Workers + D1 + Resend free limits; paid overages off).
 Already configured: Pages serves the repo **root** of `master` at `otakar.dev`
 (`CNAME` + `.nojekyll` present). To release the reworked site + booking UI:
 
-1. Ground/remove the `data-draft` items (launch gate above).
+1. (Done) The example builds are labeled as illustrations on the page.
 2. Set the production Turnstile **site key** in both `index.html` and
    `manage.html` — the inline `window.OJA` config:
    ```js
